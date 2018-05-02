@@ -345,7 +345,7 @@ Synnytysikäisten naisten lukumäärää pystytään ennustamaan melko hyvin, ei
 
 ```{r}
 syntyvyys_reg = bas.lm(hedelmallisyysluku ~pienituloisuus_0_17 + pienituloisuus_18_24 + pienituloisuus_25_34 + pienituloisuus_35_49 + urbanisaatio +
-lapsikuolleisuus + tyollisyysaste_mies_30_34_lag1 + tyollisyysaste_nainen_30_34_lag1 + tyollisyysaste_mies_35_39_lag1 + tyollisyysaste_nainen_35_39_lag1 + tyollisyysaste_mies_25_29_lag1 + tyollisyysaste_nainen_25_29_lag1 + tyollisyysaste_mies_20_24_lag1 + tyollisyysaste_nainen_20_24_lag1 + synnyttajien_keskiika + jatkuvakokoaika + jatkuvaosaaika + maaraaikakoko + maaraaikaosa, data = tyyppiaineisto,
+lapsikuolleisuus + tyollisyysaste_mies_30_34_lag1 + tyollisyysaste_nainen_30_34_lag1 + tyollisyysaste_mies_35_39_lag1 + tyollisyysaste_nainen_35_39_lag1 + tyollisyysaste_mies_25_29_lag1 + tyollisyysaste_nainen_25_29_lag1 + tyollisyysaste_mies_20_24_lag1 + tyollisyysaste_nainen_20_24_lag1 + synnyttajien_keskiika + jatkuvakokoaika_miehet + jatkuvaosaaika_miehet + maaraaikakoko_miehet + maaraaikaosa_miehet + jatkuvakokoaika_naiset + jatkuvaosaaika_naiset + maaraaikakoko_naiset + maaraaikaosa_naiset, data = tyyppiaineisto,
 prior = "ZS-null", modelprior = uniform())
 ```
 
