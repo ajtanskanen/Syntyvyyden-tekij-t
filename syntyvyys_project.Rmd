@@ -1,5 +1,6 @@
 ---
-title: "Syntyvyyden lasku ja sen mahdolliset selitykset"
+title: "Syntyvyyden lasku ja sen mahdolliset selitykset - LUONNOS"
+author: "Antti Tanskanen, EK"
 output: 
   html_document: 
     fig_height: 4
@@ -20,6 +21,7 @@ source("dualplot.R")
 load("syntyvyysaineisto_pitka.Rdata")
 load("syntyvyysaineisto_redusoitu.Rdata")
 load("tyyppiaineisto.Rdata")
+load("kaupungistumisdata.Rdata")
 ```
 
 * * *
@@ -42,7 +44,7 @@ Vuoden 2017 luvut siltä osin kuin ne ovat aineistossa ovat arvioita. Lähtöain
 
 Aineiston perusteella ei voi tehdä kausaalisia päätelmiä, ainostaan assosiatiivisuutta koskevia. Tämä tietenkin rajoittaa tulkintamahdollisuuksia.
 
-Tarkoituksena on avoimen, toistettavan tutkimuksen hengessä näyttää täsmällisesti mitä on tehty. Tästä syystä alkuperäinen aineisto ja tämä työkirja koodeineen (Rmd-muotoisena) ja aineistoineen (Rdata-muodossa) on kokonaisuudessaan saatavissa osoitteesta https://github.com/ajtanskanen/.. 
+Tarkoituksena on avoimen, toistettavan tutkimuksen hengessä näyttää täsmällisesti mitä on tehty. Tästä syystä alkuperäinen aineisto ja tämä työkirja koodeineen (Rmd-muotoisena) ja aineistoineen (Rdata-muodossa) on kokonaisuudessaan saatavissa osoitteesta https://github.com/ajtanskanen/Syntyvyyden-tekij-t 
 
 * * *
 
@@ -125,6 +127,11 @@ dualplot(syntyvyysaineisto_redusoitu$vuosi,syntyvyysaineisto_redusoitu$syntyneit
 Ja  myös 35-39 -vuotiaiden naisten määrässä
 ```{r, message = FALSE, warning = FALSE , echo = FALSE}
 dualplot(syntyvyysaineisto_redusoitu$vuosi,syntyvyysaineisto_redusoitu$syntyneita,syntyvyysaineisto_redusoitu$naisten_lkm_24_39,ylab1="Syntyneitä",ylab2="24-39 -vuotiaita naisia")
+```
+
+Urbaanistiasuvien osuus Suomessa on vahvasti negatiivisesti korreloitunut hedelmällisyysluvun kanssa
+```{r, message = FALSE, warning = FALSE , echo = FALSE}
+dualplot(kaupungistumisdata$vuosi,kaupungistumisdata$hedelmällisyysluku,kaupungistumisdata$kaupungistuminen,ylab1="Hedelmällisyysluku",ylab2="Kaupungistuminen")
 ```
 
 * * *
@@ -221,8 +228,8 @@ Tutkimuskirjallisuudessa on argumentoitu, että mm. nuorten miesten työllisyys 
 
 Yritetään sitten selittää hedelmällisyysluvun muutoksia käyttäen faktoreina 24-39 -vuotiaiden naisten lukumäärä, ikäluokka- ja sukupuolikohtaisia työttömyysasteita ja pienituloisuusosuusasteita (60% mediaanitulosta). 
 ```{r}
-syntyvyys_reg = bas.lm(hedelmallisyysluku ~pienituloisuus_0_17 + pienituloisuus_18_24 + pienituloisuus_25_34 + pienituloisuus_35_49 + pienituloisuus_50_64  + urbanisaatio +
-lapsikuolleisuus + miesten_tyottomyysaste_15_24_lag1 + naisten_tyottomyysaste_15_24_lag1 + miesten_tyottomyysaste_25_34_lag1 +naisten_tyottomyysaste_25_34_lag1 + miesten_tyottomyysaste_35_44_lag1 + naisten_tyottomyysaste_35_44_lag1 + synnyttajien_keskiika + avioliitot + avioerot, data = syntyvyysaineisto_redusoitu,
+syntyvyys_reg = bas.lm(hedelmallisyysluku ~pienituloisuus_0_17 + pienituloisuus_18_24 + pienituloisuus_25_34 + pienituloisuus_35_49 + pienituloisuus_50_64  + 
+lapsikuolleisuus + miesten_tyottomyysaste_15_24_lag1 + naisten_tyottomyysaste_15_24_lag1 + miesten_tyottomyysaste_25_34_lag1 +naisten_tyottomyysaste_25_34_lag1 + miesten_tyottomyysaste_35_44_lag1 + naisten_tyottomyysaste_35_44_lag1 + synnyttajien_keskiika + avioliitot + avioerot + elakemeno + kaupungissaasuvat + maaseudulla + sisakaupungissa, data = syntyvyysaineisto_redusoitu,
 prior = "ZS-null", modelprior = uniform())
 ```
 
@@ -263,7 +270,7 @@ ggplot(df,aes(x=vuosi))+geom_line(aes(y=hedelmallisyysluku,colour="green"))+geom
 
 Yritetään sitten selittää hedelmällisyysluvun muutoksia käyttäen faktoreina 24-39 -vuotiaiden naisten lukumäärä, ikäluokka- ja sukupuolikohtaisia työllisyysasteita ja pienituloisuusosuusasteita (60% mediaanitulosta). 
 ```{r}
-syntyvyys_reg = bas.lm(hedelmallisyysluku ~pienituloisuus_0_17 + pienituloisuus_18_24 + pienituloisuus_25_34 + pienituloisuus_35_49 + pienituloisuus_50_64  + urbanisaatio +  lapsikuolleisuus + tyollisyysaste_mies_30_34_lag1 + tyollisyysaste_nainen_30_34_lag1 + tyollisyysaste_mies_35_39_lag1 + tyollisyysaste_nainen_35_39_lag1 + tyollisyysaste_mies_25_29_lag1 + tyollisyysaste_nainen_25_29_lag1 + tyollisyysaste_mies_20_24_lag1 + tyollisyysaste_nainen_20_24_lag1 + synnyttajien_keskiika + avioliitot + avioerot, data = syntyvyysaineisto_redusoitu,
+syntyvyys_reg = bas.lm(hedelmallisyysluku ~pienituloisuus_0_17 + pienituloisuus_18_24 + pienituloisuus_25_34 + pienituloisuus_35_49 + pienituloisuus_50_64  + lapsikuolleisuus + tyollisyysaste_mies_30_34_lag1 + tyollisyysaste_nainen_30_34_lag1 + tyollisyysaste_mies_35_39_lag1 + tyollisyysaste_nainen_35_39_lag1 + tyollisyysaste_mies_25_29_lag1 + tyollisyysaste_nainen_25_29_lag1 + tyollisyysaste_mies_20_24_lag1 + tyollisyysaste_nainen_20_24_lag1 + synnyttajien_keskiika + avioliitot + avioerot + elakemeno + kaupungissaasuvat + maaseudulla + sisakaupungissa, data = syntyvyysaineisto_redusoitu,
 prior = "ZS-null", modelprior = uniform())
 ```
 
@@ -306,7 +313,7 @@ Työllisyysaste vaikuttaisi olevan työttömyysastetta parempi selittävä tekij
 
 Yritetään sitten selittää muutoksia synnyttäjen keski-iässä käyttäen faktoreina 24-39 -vuotiaiden naisten lukumäärä, ikäluokka- ja sukupuolikohtaisia työllisyysasteita ja pienituloisuusosuusasteita (60% mediaanitulosta). 
 ```{r, message = FALSE, warning = FALSE, echo=FALSE}
-keskiika_reg = bas.lm(synnyttajien_keskiika ~pienituloisuus_25_34   + urbanisaatio +  lapsikuolleisuus + tyollisyysaste_nainen_25_29_lag1 + tyollisyysaste_nainen_30_34_lag1, data = syntyvyysaineisto_redusoitu,
+keskiika_reg = bas.lm(synnyttajien_keskiika ~pienituloisuus_25_34   + lapsikuolleisuus + tyollisyysaste_nainen_25_29_lag1 + tyollisyysaste_nainen_30_34_lag1 + elakemeno + kaupungissaasuvat + maaseudulla + sisakaupungissa, data = syntyvyysaineisto_redusoitu,
 prior = "ZS-null", modelprior = uniform())
 ```
 
@@ -344,8 +351,7 @@ Kokeillaan sitten vaikuttaako työsuhdetyyppi syntyvyyteen. Aineistona käytetä
 Synnytysikäisten naisten lukumäärää pystytään ennustamaan melko hyvin, eikä siihen vaikuta juurikaan muut tekijät, kuten vaikkapa työllisyys tai taloudellinen tilanne. Jos sellaiset tekijät vaikuttavat syntyvyyteen, vaikutuksen pitäisi näkyä hedelmällisyysluvussa.
 
 ```{r}
-syntyvyys_reg = bas.lm(hedelmallisyysluku ~pienituloisuus_0_17 + pienituloisuus_18_24 + pienituloisuus_25_34 + pienituloisuus_35_49 + urbanisaatio +
-lapsikuolleisuus + tyollisyysaste_mies_30_34_lag1 + tyollisyysaste_nainen_30_34_lag1 + tyollisyysaste_mies_35_39_lag1 + tyollisyysaste_nainen_35_39_lag1 + tyollisyysaste_mies_25_29_lag1 + tyollisyysaste_nainen_25_29_lag1 + tyollisyysaste_mies_20_24_lag1 + tyollisyysaste_nainen_20_24_lag1 + synnyttajien_keskiika + jatkuvakokoaika_miehet + jatkuvaosaaika_miehet + maaraaikakoko_miehet + maaraaikaosa_miehet + jatkuvakokoaika_naiset + jatkuvaosaaika_naiset + maaraaikakoko_naiset + maaraaikaosa_naiset, data = tyyppiaineisto,
+syntyvyys_reg = bas.lm(hedelmallisyysluku ~pienituloisuus_0_17 + pienituloisuus_18_24 + pienituloisuus_25_34 + pienituloisuus_35_49 + synnyttajien_keskiika + jatkuvakokoaika_miehet + jatkuvaosaaika_miehet + maaraaikakoko_miehet + maaraaikaosa_miehet + jatkuvakokoaika_naiset + jatkuvaosaaika_naiset + maaraaikakoko_naiset + maaraaikaosa_naiset+ kaupungissaasuvat + maaseudulla + sisakaupungissa, data = tyyppiaineisto,
 prior = "ZS-null", modelprior = uniform())
 ```
 
