@@ -1,6 +1,7 @@
 ---
 title: "Syntyvyyden lasku ja sen mahdolliset selitykset - LUONNOS"
-author: "Antti Tanskanen, EK"
+date: "3.5.2018"
+author: "Antti Tanskanen"
 output: 
   html_document: 
     fig_height: 4
@@ -21,7 +22,6 @@ source("dualplot.R")
 load("syntyvyysaineisto_pitka.Rdata")
 load("syntyvyysaineisto_redusoitu.Rdata")
 load("tyyppiaineisto.Rdata")
-load("kaupungistumisdata.Rdata")
 ```
 
 * * *
@@ -51,33 +51,15 @@ Tarkoituksena on avoimen, toistettavan tutkimuksen hengessä näyttää täsmäl
 ```{r, message = FALSE, warning = FALSE, echo = FALSE}
 fertility_data=long_fertility_data[96:143,]
 syntyvyysaineisto_redusoitu <- syntyvyysaineisto_redusoitu %>% mutate(tyollisyysaste_nainen_20_24_lag1=lag(tyollisyysaste_nainen_20_24,1),
-       tyollisyysaste_nainen_20_24_lag2=lag(tyollisyysaste_nainen_20_24,2),
-       tyollisyysaste_nainen_20_24_lag3=lag(tyollisyysaste_nainen_20_24,3),
        tyollisyysaste_nainen_25_29_lag1=lag(tyollisyysaste_nainen_25_29,1),
-       tyollisyysaste_nainen_25_29_lag2=lag(tyollisyysaste_nainen_25_29,2),
-       tyollisyysaste_nainen_25_29_lag3=lag(tyollisyysaste_nainen_25_29,3),
        tyollisyysaste_nainen_30_34_lag1=lag(tyollisyysaste_nainen_30_34,1),
-       tyollisyysaste_nainen_30_34_lag2=lag(tyollisyysaste_nainen_30_34,2),
-       tyollisyysaste_nainen_30_34_lag3=lag(tyollisyysaste_nainen_30_34,3),
        tyollisyysaste_nainen_35_39_lag1=lag(tyollisyysaste_nainen_35_39,1),
-       tyollisyysaste_nainen_35_39_lag2=lag(tyollisyysaste_nainen_35_39,2),
-       tyollisyysaste_nainen_35_39_lag3=lag(tyollisyysaste_nainen_35_39,3),
        tyollisyysaste_mies_20_24_lag1=lag(tyollisyysaste_mies_20_24,1),
-       tyollisyysaste_mies_20_24_lag2=lag(tyollisyysaste_mies_20_24,2),
-       tyollisyysaste_mies_20_24_lag3=lag(tyollisyysaste_mies_20_24,3),
        tyollisyysaste_mies_25_29_lag1=lag(tyollisyysaste_mies_25_29,1),
-       tyollisyysaste_mies_25_29_lag2=lag(tyollisyysaste_mies_25_29,2),
-       tyollisyysaste_mies_25_29_lag3=lag(tyollisyysaste_mies_25_29,3),
        tyollisyysaste_mies_30_34_lag1=lag(tyollisyysaste_mies_30_34,1),
-       tyollisyysaste_mies_30_34_lag2=lag(tyollisyysaste_mies_30_34,2),
-       tyollisyysaste_mies_30_34_lag3=lag(tyollisyysaste_mies_30_34,3),
        tyollisyysaste_mies_35_39_lag1=lag(tyollisyysaste_mies_35_39,1),
-       tyollisyysaste_mies_35_39_lag2=lag(tyollisyysaste_mies_35_39,2),
-       tyollisyysaste_mies_35_39_lag3=lag(tyollisyysaste_mies_35_39,3),
        tyollisyysaste_nainen_30_34_lead1=lead(tyollisyysaste_nainen_30_34,1),
-       tyollisyysaste_nainen_30_34_lead2=lead(tyollisyysaste_nainen_30_34,2),
-       tyollisyysaste_nainen_30_34_lead3=lead(tyollisyysaste_nainen_30_34,3),
-        miesten_tyottomyysaste_15_24_lag1=lag(miesten_tyottomyysaste_15_24),
+       miesten_tyottomyysaste_15_24_lag1=lag(miesten_tyottomyysaste_15_24),
        miesten_tyottomyysaste_25_34_lag1=lag(miesten_tyottomyysaste_25_34),
        miesten_tyottomyysaste_35_44_lag1=lag(miesten_tyottomyysaste_35_44),
        naisten_tyottomyysaste_15_24_lag1=lag(naisten_tyottomyysaste_15_24),
@@ -131,7 +113,7 @@ dualplot(syntyvyysaineisto_redusoitu$vuosi,syntyvyysaineisto_redusoitu$syntyneit
 
 Urbaanistiasuvien osuus Suomessa on vahvasti negatiivisesti korreloitunut hedelmällisyysluvun kanssa
 ```{r, message = FALSE, warning = FALSE , echo = FALSE}
-dualplot(kaupungistumisdata$vuosi,kaupungistumisdata$hedelmällisyysluku,kaupungistumisdata$kaupungistuminen,ylab1="Hedelmällisyysluku",ylab2="Kaupungistuminen")
+dualplot(syntyvyysaineisto_redusoitu$vuosi,syntyvyysaineisto_redusoitu$hedelmallisyysluku,syntyvyysaineisto_redusoitu$sisakaupungissa,ylab1="Hedelmällisyysluku",ylab2="Kaupungistuminen")
 ```
 
 * * *
@@ -163,10 +145,10 @@ Kun verrataan sovitetta aineistoon, näkyy että erot ovat datan ja mallin väli
 
 ```{r, message = FALSE, warning = FALSE, echo=FALSE}
 fit<-fitted(syntyvyys_base)
-vuosi<-syntyvyysaineisto_redusoitu$vuosi[1:27]
-synty<-syntyvyysaineisto_redusoitu$syntyneita[1:27]
-df<-data.frame(vuosi,synty,fit)
-ggplot(df,aes(x=vuosi))+geom_line(aes(y=synty,colour="green"))+geom_line(aes(y=fit,colour="red")) + scale_color_discrete(name = "Syntyneitä", labels = c("Aineisto", "Sovite"))
+Vuosi<-syntyvyysaineisto_redusoitu$vuosi[1:27]
+Syntyneet<-syntyvyysaineisto_redusoitu$syntyneita[1:27]
+df<-data.frame(Vuosi,Syntyneet,fit)
+ggplot(df,aes(x=Vuosi))+geom_line(aes(y=Syntyneet,colour="green"))+geom_line(aes(y=fit,colour="red")) + scale_color_discrete(name = "Syntyneitä", labels = c("Aineisto", "Sovite"))
 ```
 
 
@@ -204,9 +186,9 @@ Sovite on edelleenkin hyvä, mutta selviä eroja näkyy nyt faktorimallin ja dat
 ```{r, message = FALSE, warning = FALSE, echo=FALSE}
 fit_long<-fitted(syntyvyys_long)
 vuosi<-fertility_data$vuosi
-syntyita<-fertility_data$syntyneita
-df<-data.frame(vuosi,syntyita,fit_long)
-ggplot(df,aes(x=vuosi))+geom_line(aes(y=syntyita,colour="green"))+geom_line(aes(y=fit_long,colour="red")) + scale_color_discrete(name = "Syntyneitä", labels = c("Aineisto", "Sovite"))
+Syntyneet<-fertility_data$syntyneita
+df<-data.frame(vuosi,Syntyneet,fit_long)
+ggplot(df,aes(x=vuosi))+geom_line(aes(y=Syntyneet,colour="green"))+geom_line(aes(y=fit_long,colour="red")) + scale_color_discrete(name = "Syntyneitä", labels = c("Aineisto", "Sovite"))
 ```
 
 Tarkastetaan vielä, millaisia residuaaleja jää selittämättä mallilla
@@ -414,4 +396,66 @@ Miettinen, A., Miksi syntyvyys laskee? Suomalaisten lastensaantiin liittyviä to
 Miettinen, A., Jalovaara, M. Stable employment – more babies? Life stage and educational differences in the effects of labour market attachment on first birth among Finnish men and women. Working Papers on Social and Economic Issues 15/2016, Turku Center for Welfare Research, 2016
 
 
+# Aika-sarjat
 
+syntyneet
+Syntyneiden lasten lukumäärä
+Lähde: Tilastokeskus
+
+hedelmallisyysluku
+"Kokonaishedelmällisyysluku saadaan laskemalla yhteen yhdelle ikävuodelle 
+lasketut hedelmällisyysluvut. Näin saatu luku tarkoittaa laskennallista 
+lasten määrää, jonka nainen synnyttää kyseisen vuoden hedelmällisyyden 
+pysyessä voimassa naisen koko hedelmällisen kauden edellyttäen, ettei hän 
+kuole ennen tämän kauden päättymistä."
+Lähde: Tilastokeskus, Väestörakenne-tilasto
+
+pienituloisuus_0_17, pienituloisuus_18_24, pienituloisuus_25_34, pienituloisuus_35_49, pienituloisuus_50_64
+"Pienituloisuusaste: Pienituloisten osuus kyseisessä väestöryhmässä. 
+Pienituloisia henkilöitä: Pienituloisia henkilöitä kyseisessä väestöryhmässä. 
+Pienituloisten mediaanitulo: Pienituloisten ekvivalentit mediaanitulot kyseisessä väestöryhmässä. 
+Köyhyysvaje: Pienituloisten tulomediaanin ja koko väestön pienituloisuusrajan erotus prosentteina rajasta.
+ Ekvivalenttitulo: Kotitalouden käytettävissä olevat rahatulot kulutusyksikköä kohden vuodessa. 
+Kulutusyksikkö: Modifioitu OECD-asteikko (1.0 - 0.5 - 0.3).
+Pienituloisuusrajat lasketaan vuosittain kaikkien kotitalouksien ekvivalenttitulon mediaanin perusteella.
+Julkaisuissa käytetty virallinen pienituloisuusraja on 60 % mediaanitulosta ja tulokäsite käytettävissä olevat rahatulot.Euromääräiset tiedot on esitetty vuoden 2016 rahassa."
+Lähde: Tilastokeskus, Tulonjakotilasto
+
+lapsikuolleisuus
+Alle 1-vuotiaana kuolleiden osuus elävänä syntyneistä. 
+Lähde: Human mortality database
+
+tyollisyysaste_mies_30_34_lag1, tyollisyysaste_nainen_30_34_lag1, tyollisyysaste_mies_35_39_lag1, tyollisyysaste_nainen_35_39_lag1, tyollisyysaste_mies_25_29_lag1, tyollisyysaste_nainen_25_29_lag1, tyollisyysaste_mies_20_24_lag1, tyollisyysaste_nainen_20_24_lag1
+Yhden vuoden viivästetty 5-vuotisikäluokittainen työllisyysaste miehille ja naisille
+Lähde: Tilastokeskus
+
+synnyttajien_keskiika
+Laskettu synnyttäneiden äitien ikien keskiarvona
+Lähde: Tilastokeskus
+
+avioliitot, avioerot 
+Lähde: Tilastokeskus
+
+elakemeno
+Kokonaiseläkemeno Suomessa
+Lähde: Eläketurvakeskus
+
+kaupungissaasuvat, maaseudulla, sisakaupungissa
+Kaupungeissaasuvien osuus väestöstä, maaseudulla asuvien osuus väestöstä ja 
+Lähde: Tilastokeskus
+
+jatkuvakokoaika_miehet, jatkuvaosaaika_miehet, maaraaikakoko_miehet, maaraaikaosa_miehet, jatkuvakokoaika_naiset, jatkuvaosaaika_naiset, maaraaikakoko_naiset, maaraaikaosa_naiset
+Lähde:
+Tilastokeskus, työvoimatutkimus
+
+naisten_lkm_15_19, naisten_lkm_20_24, naisten_lkm_25_29, naisten_lkm_30_34,naisten_lkm_35_39,  naisten_lkm_40_45, naisten_lkm_45_49
+Synnytysikäiset naiset 5-vuotisikäluokittain
+Lähde:
+Tilastokeskus
+
+miesten_tyottomyysaste_15_24_lag1 + naisten_tyottomyysaste_15_24_lag1 + miesten_tyottomyysaste_25_34_lag1 +naisten_tyottomyysaste_25_34_lag1 + miesten_tyottomyysaste_35_44_lag1 + naisten_tyottomyysaste_35_44_lag1
+Yhden vuoden viivästetty 5-vuotisikäluokittainen työttömyysaste miehille ja naisille
+Lähde: Tilastokeskus
+
+5-vuotisikäluokittain naisten ja miesten työttömyysasteet
+Lähde: Tilastokeskus
