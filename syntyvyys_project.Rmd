@@ -28,9 +28,9 @@ load("tyyppiaineisto.Rdata")
 
 ## Johdanto
 
-Syntyneiden lasten määrä on Suomessa laskenut 61 000 lapsesta vuonna 2010 noin 50 300:ään vuonna 2017. Laskeva trendi on jatkunut koko välin, joten satunnaisvaihtelusta ei liene kysymys. Osan laskusta selittää synnytysikäisten naisten lukumäärän pieneneminen, mutta ei läheskään kaikkea. Selityksiksi on tarjottu mm. työttömyyttä (Hiilamo, 2017) ja  heikkoa työsuhteeseen kiinnittymistä erityisesti miehillä (Miettinen ja Jalovaara, 2015). Muualla syntyvyyden laskun on arvioitu aiheutuvan mm. lapsikuolleisuuden vähenemisestä (Becker ja Barro, 1988), kaupungistumisesta (Martine et al., 2013) ja vanhuuseläkkeitä (Boldrin et al., 2015). Taloudellisten kriisien on myös havaittu lisänneen syntyvyyttä (Kohler ja Kohler, 2002).
+Syntyneiden lasten määrä on Suomessa laskenut 61 000 lapsesta vuonna 2010 noin 50 300:ään vuonna 2017. Laskeva trendi on jatkunut koko aikavälin 2010-2017, joten satunnaisvaihtelusta tuskin on kysymys. Osan laskusta selittää synnytysikäisten naisten lukumäärän pieneneminen, mutta ei läheskään kaikkea. Muiksi selityksiksi on tarjottu mm. työttömyyttä (Hiilamo, 2017) ja miesten heikkoa työsuhteeseen kiinnittymistä (Miettinen ja Jalovaara, 2015). Muissa maissa syntyvyyden laskun on arvioitu aiheutuvan mm. lapsikuolleisuuden vähenemisestä (Becker ja Barro, 1988), kaupungistumisesta (Martine et al., 2013) ja vanhuuseläkkeiden korkeammasta korvausasteesta (Boldrin et al., 2015). Sen lisäksi että työttömyys alentaisi syntyvyyttä, taloudellisten kriisien on myös havaittu lisänneen syntyvyyttä (Kohler ja Kohler, 2002).
 
-Syntyneiden määrällä on viiveellä vaikutusta työikäisen väestön määrään, joten syntyvyyden laskulla on vaikutuksia mm. sosiaaliturvan rahoituksen kestävyyteen.
+Syntyneiden määrällä on viiveellä vaikutusta työikäisen väestön määrään, ja sitä kautta syntyvyyden laskulla on vaikutuksia mm. sosiaaliturvan rahoituksen kestävyyteen. Eläketurvakeskuksen laskelmien mukaan työeläkemaksussa on pitkällä aikavälillä useiden prosenttiyksiköiden nousupaine (Tikanmäki, 2017).
 
 Tässä tutkimuksessa tavoitteena on hakea eri tekijöiden merkitystä syntyvyyden laskuun ja tarkastella, onko yksioikoisella regressiolla mahdollista löytää aineistosta viitteitä siitä, että jokin tai jotkin esitetyistä syistä selittäisivät syntyvyyden laskua. Koska aineisto on perin rajallista, on tuloksiin syytä suhtautua varovaisesti. 
 
@@ -38,14 +38,16 @@ Tässä tutkimuksessa tavoitteena on hakea eri tekijöiden merkitystä syntyvyyd
 
 ## Aineisto
 
-Tutkimuksessa käytetty aikasarja-aineisto on peräisin tilastokeskuksen StatFin-tietokannasta, ETK:lta ja Human Mortality Databasesta
-. Aineisto koostuu vuosien 1989-2017 syntyneiden lukumäärästä, hedelmällisyysluvusta, 5v ikäluokittaisista työllisyysasteista sukupuolittain, 5-vuotisikäluokkakohtaisista työttömyysasteista sukupuolittain, naisten lukumääristä 5-vuotis ikäryhmittäin, 5-vuotisikäluokittain pienituloisten osuus (tulos alle 60 % mediaanitulosta), synnyttäjien keski-ikä . 
+Tutkimuksessa käytetty aikasarja-aineisto on peräisin tilastokeskuksen StatFin-tietokannasta, ETK:lta ja Human Mortality Databasesta. Aineisto koostuu vuosien 1989-2017 datasta. Väestörakenteesta (Tilastokeskus) mukana on syntyneidet lukumäärät, kokonaishedelmällisyysluvut, synnyttäjien keski-ikä ja naisten lukumäärät 5-vuotisikäryhmittäin. Mukana ovat myös avioliittojen ja avioerojen määrät (Tilastokeskus).
 
-Vuoden 2017 luvut siltä osin kuin ne ovat aineistossa ovat arvioita. Lähtöaineistossa on 87 aikasarjaa, joissa on 29 havaintoa vuosilta 1989-2017. Osa aikasarjoista on viivästettyjä versioita muista aikasarjoista.
+Työllisyyttä (Tilastokeskus) kuvataan 10-vuotisikäluokittaisilla työllisyysasteilla sukupuolittain, 10-vuotisikäluokkakohtaisista työttömyysasteista sukupuolittain, ja työsuhteiden tyyppitiedoilla (jatkuva/määräaikainen; kokoaikainen/osa-aikainen) vuosilta 1997-2017. Pienituloisuutta kuvaa 10-vuotisikäluokittainen pienituloisten osuus (tulos alle 60 % mediaanitulosta) väestöstä (Tilastokeskus). Kaupungistumista kuvaa maalla, ulommassa kaupungissa ja sisemmässä kaupungissa asuvien osuudet väestöstä (Tilastokeskus) 
+Eläkejärjestelmän vaikutusta syntyvyyteen yritetään selvittää käyttämällä vertailukohtana eläkemenoa BKT:stä (Eläketurvakeskus). Lapsikuolleisuus (Human mortality database)
+
+Kaikkiaan lähtöaineistossa on 39 aikasarjaa, joissa on 29 havaintoa vuosilta 1989-2017, tosin osasta aikasarjoja vuosien 1989 ja/tai 2017 luvut puuttuvat. Pidempiä aikasarjoja löytyy syntyneistä, naisten 5-vuotisikäluokittaisesta määrästä ja hedelmällisyysluvusta. Näistä käytetään aikasarjoja vuosilta 1970-2017.
 
 Aineiston perusteella ei voi tehdä kausaalisia päätelmiä, ainostaan assosiatiivisuutta koskevia. Tämä tietenkin rajoittaa tulkintamahdollisuuksia.
 
-Tarkoituksena on avoimen, toistettavan tutkimuksen hengessä näyttää täsmällisesti mitä on tehty. Tästä syystä alkuperäinen aineisto ja tämä työkirja koodeineen (Rmd-muotoisena) ja aineistoineen (Rdata-muodossa) on kokonaisuudessaan saatavissa osoitteesta https://github.com/ajtanskanen/Syntyvyyden-tekij-t 
+Tarkoituksena on avoimen, toistettavan tutkimuksen hengessä näyttää täsmällisesti mitä on tehty. Tästä syystä alkuperäinen aineisto (myös tämä työkirja koodeineen, Rmd-muotoisena; data Rdata-muodossa) on kokonaisuudessaan saatavissa osoitteesta https://github.com/ajtanskanen/Syntyvyyden-tekij-t 
 
 * * *
 
@@ -62,7 +64,9 @@ syntyvyysaineisto_redusoitu <- syntyvyysaineisto_redusoitu %>% mutate(tyollisyys
        miesten_tyottomyysaste_35_44_lag1=lag(miesten_tyottomyysaste_35_44),
        naisten_tyottomyysaste_15_24_lag1=lag(naisten_tyottomyysaste_15_24),
        naisten_tyottomyysaste_25_34_lag1=lag(naisten_tyottomyysaste_25_34),
-       naisten_tyottomyysaste_35_44_lag1=lag(naisten_tyottomyysaste_35_44)
+       naisten_tyottomyysaste_35_44_lag1=lag(naisten_tyottomyysaste_35_44),
+       avioituvuus_naiset_25_29_lag1=lag(avioituvuus_naiset_25_29),
+       avioituvuus_naiset_30_34_lag1=lag(avioituvuus_naiset_30_34)
       )
 syntyvyysaineisto_redusoitu<-syntyvyysaineisto_redusoitu[2:29,]
 
@@ -147,13 +151,14 @@ missä H on hedelmällisyysluvun poikkeama vuosien 1989-2017 keskiarvosta ja N_{
 
 ## Pidempi aineisto
 
-Ajetaan sama malli pidemmälle aineistolle, vuosien 1970-2017
+Yllä tarkasteltu malli toimi erinomaisesti vuosien 1989-2016 aineistolla. Siinä kuitenkin oletetaan että eri 5-vuotisikäryhmien painot säilyvät samoina koko aikavälin, vaikka tiedetään että synnyttäneiden keski-ikä on noussut.  
+Jotta nähdään, onko tällä vaikutusta, ajetaan sama malli pidemmälle aineistolle, vuosien 1970-2017 aineistolla.
 ```{r, message = FALSE, warning = FALSE}
 syntyvyys_long = bas.lm(syntyneita ~ hedelmallisyysluku + naisten_lkm_15_19 + naisten_lkm_20_24 + naisten_lkm_25_29 + naisten_lkm_30_34 +naisten_lkm_35_39 +  naisten_lkm_40_45 + naisten_lkm_45_49, 
 data = fertility_data, prior = "ZS-null", modelprior = uniform())
 ```
 
-Nyt paras malli selittää 98,5 % varianssista. Ero ylläolevaan on se, että ajanjakson aikana synnyttäneiden keski-ikä on kasvanut, jolloin regressiokerrointenkin pitäisi muuttua vastaavasti. Tämä näkyy siinä, että tässä aineistossa regressiokerrointen painopiste on siirtynyt nuorempiin ikiin.
+Nyt paras malli selittää hieman pienemmän osuuden varianssista, mutta kuitenkin 98,5 %. Ero ylläolevaan on se, että ajanjakson aikana synnyttäneiden keski-ikä on kasvanut, jolloin regressiokerrointenkin pitäisi muuttua vastaavasti. Tämä näkyy siinä, että tässä aineistossa regressiokerrointen painopiste on siirtynyt nuorempiin ikiin, kuten odottaisikin.
 ```{r, message = FALSE, warning = FALSE, echo=FALSE}
 round(summary(syntyvyys_long),3)
 ```
@@ -173,7 +178,7 @@ df<-data.frame(vuosi,Syntyneet,fit_long)
 ggplot(df,aes(x=vuosi))+geom_line(aes(y=Syntyneet,colour="green"))+geom_line(aes(y=fit_long,colour="red")) + scale_color_discrete(name = "Syntyneitä", labels = c("Aineisto", "Sovite"))
 ```
 
-Tarkastetaan vielä, millaisia residuaaleja jää selittämättä mallilla. Nyt residuaalit tasoa kuvaava punainen käyrä ei olekaan suora, mikä viittaa siihen että vuosien varrella tapahtuu muutos, jota tämä malli ei pysty selittämään. Tämä johtuu siitä, että synnyttäjien keski-ikä nousee ja eri ikäisten synnyttäjien paino muuttuu tarkasteluperiodin aikana.
+Tarkastetaan vielä, millaisia residuaaleja jää selittämättä mallilla. Nyt residuaalit tasoa kuvaava punainen käyrä ei olekaan suora, mikä viittaa siihen että vuosien varrella tapahtuu muutos, jota tämä malli ei pysty selittämään. 
 ```{r, message = FALSE, warning = FALSE, echo=FALSE}
 plot(syntyvyys_long,1)
 ```
@@ -181,61 +186,17 @@ plot(syntyvyys_long,1)
 Syntyneiden määrälle regressiomalli antaa yksinkertaisen mallin
 $$S=60870+32600H+0.1594N_{20-24}+0.1235N_{25-29}+0.0987N_{30-34}+0.03230N_{35-39}+0.02106N_{40-44}+0.04245N_{45-49}$$.
 
-missä H on hedelmällisyysluvun poikkeama vuosien 1970-2017 keskiarvosta ja N_{x-y}:t ovat x-y -ikäisten naisten lukumäärien poikkeamia vuosien 1970-2017 keskiarvosta.
+missä H on hedelmällisyysluvun poikkeama vuosien 1970-2017 keskiarvosta ja N_{x-y}:t ovat x-y -ikäisten naisten lukumäärien poikkeamia vuosien 1970-2017 keskiarvosta. Vakiotermille huomioi faktoreiden keskiarvojen vaikutuksen syntyneiden lukumäärään.
 
+# Hedelmällisyysluvun malli selittävänä tekijänä
 
-## Työttömyys ja pienituloisuus ja hedelmällisyysluvun muutokset
+<!--- + tyollisyysaste_miehet_15_24_lag1 + tyollisyysaste_naiset_25_34_lag1 + tyollisyysaste_miehet_35_44_lag1 + tyollisyysaste_naiset_15_24_lag1 + tyollisyysaste_miehet_25_34_lag1 + tyollisyysaste_naiset_35_44_lag1 --->
 
 Synnytysikäisten naisten lukumäärää pystytään ennustamaan melko hyvin, eikä siihen vaikuta juurikaan muut tekijät, kuten vaikkapa työllisyys tai taloudellinen tilanne. Jos sellaiset tekijät vaikuttavat syntyvyyteen, vaikutuksen pitäisi näkyä hedelmällisyysluvussa.
 
-Tutkimuskirjallisuudessa on argumentoitu, että mm. nuorten miesten työllisyys vaikuttaa hedelmällisyyslukuun (Hiilamo, 2017), kaupungistuminen (Martine et al., 2003; Dribe ..), lapsikuolleisuuden lasku (), nuorten miesten syrjäytyminen (Väestöliitto)
-
-Yritetään sitten selittää hedelmällisyysluvun muutoksia käyttäen faktoreina 24-39 -vuotiaiden naisten lukumäärä, ikäluokka- ja sukupuolikohtaisia työttömyysasteita (viivästettynä) ja pienituloisuusosuusasteita (60% mediaanitulosta), synnyttäjien keski-ikää, eläkemenon osuutta BKT:stä sekä kaupungeissa, maaseudulla ja keskustoissa asuvien osuuksia.
-```{r}
-syntyvyys_reg = bas.lm(hedelmallisyysluku ~pienituloisuus_0_17 + pienituloisuus_18_24 + pienituloisuus_25_34 + pienituloisuus_35_49 + pienituloisuus_50_64  + 
-lapsikuolleisuus + miesten_tyottomyysaste_15_24_lag1 + naisten_tyottomyysaste_15_24_lag1 + miesten_tyottomyysaste_25_34_lag1 +naisten_tyottomyysaste_25_34_lag1 + miesten_tyottomyysaste_35_44_lag1 + naisten_tyottomyysaste_35_44_lag1 + synnyttajien_keskiika + avioliitot + avioerot + elakemeno + kaupungissaasuvat + maaseudulla + sisakaupungissa, data = syntyvyysaineisto_redusoitu,
-prior = "ZS-null", modelprior = uniform())
-```
-
-Tuloksista näkyy selvästi, että keskustoissa ja maaseudulla asuvien osuus väestöstä liittyy kytkeytyy selvästi hedelmällisyyslukuun. Muita vaikuttavia, mutta vähemmän merkittäviä tekijöitä ovat synnyttäjien keski-ikä, 
-Ja kun katsomme tuloksia, näkyy malli, jossa faktoreina ovat 30-34 -vuotiaiden naisten työllisyysaste, 20-23 -vuotiaiden naisten työllisyysaste, ja 24-39 -vuotiaiden naisten lukumäärä. Näillä faktoreilla on mahdollista selittää noin 95 % syntyneiden lukumäärän varianssista datassa.
-
-```{r, message = FALSE, warning = FALSE, echo=FALSE}
-round(summary(syntyvyys_reg),3)
-```
-
-Alle 18-vuotiaiden pienituloisuus liittyy hedelmällisyyslukuun, mutta regressiokerroin on vain -0,02. Tällöin 1 %-yksikön alenema alle 18-vuotiaiden pienituloisuudessa liittyisi hedelmällisyysluvun kasvuun 1,49:stä 1,51:een. Myös 50-64 -vuotiaiden pienituloisuus liittyy hedelmällisyyslukuun, mutta regressiokerroin on +0,0089. Positiivinen etumerkki viittaa tässä tapauksessa multikollineaarisuusongelmaan, mutta jos uskomme kertoimen olevan oikein, liittyisi 1 %-yksikön pieneneminen 50-64 -vuotiaiden pienituloisuudessa hedelmällisyysluvun alenemiseen 1,49:stä 1,48:aan. Kyse ei siis olisi isoäiti-efektistä, jossa isovanhempien apu lastenhoidossa lisäisi syntyvyttää. Tämä kerroin ei vaikuta uskottavalta.
-
-Kaupungikien keskustoissa asuvien osuus liittyy regression mukaan hedelmällisyyslukuun kertoimella -0,198. Tällöin 1 %-yksikön kasvu kaupungistumisessa kasvattaisi hedelmällisyyslukua 1,49:stä 1,69:ään. Kaupungistumisen aikasarja on hitaasti kasvava ja tasainen. Tiedetään, että Suomen suurissa kaupungeissa on alimmat hedelmällisyysluvut, joten tulos on vähintäänkin yllättävä, eikä kovin uskottava.
-
-Synnyttäjien keski-ikä kytkeytyy vahvasti hedelmällisyyslukuun (-0,60). Jos synnyttäjien keski-ikä alenisi yhden vuoden, kasvaisi hedelmällisyysluku 1,49:stä 2,09:ään, jos arvio regressiokertoimesta on oikea.
-
-```{r, message = FALSE, warning = FALSE, echo=FALSE}
-syntyvyys_coef=coef(syntyvyys_reg,estimator="BMA")
-syntyvyys_coef
-```
-
-Tarkastetaan vielä, millaisia residuaaleja jää selittämättä mallilla
-```{r, message = FALSE, warning = FALSE, echo=FALSE}
-plot(syntyvyys_reg,1)
-```
-
-Ja lopuksi verrataan mallin sovitetta 
-
-```{r, message = FALSE, warning = FALSE, echo=FALSE}
-fit<-fitted(syntyvyys_reg)
-vuosi<-syntyvyysaineisto_redusoitu$vuosi[1:27]
-hedelmallisyysluku<-syntyvyysaineisto_redusoitu$hedelmallisyysluku[1:27]
-df<-data.frame(vuosi,hedelmallisyysluku,fit)
-ggplot(df,aes(x=vuosi))+geom_line(aes(y=hedelmallisyysluku,colour="green"))+geom_line(aes(y=fit,colour="red")) + scale_color_discrete(name = "Hedelmällisyysluku", labels = c("Aineisto", "Sovite"))
-```
-
-
-# Työllisyysaste selittävänä tekijänä
-
 Yritetään sitten selittää hedelmällisyysluvun muutoksia käyttäen faktoreina 24-39 -vuotiaiden naisten lukumäärä, ikäluokka- ja sukupuolikohtaisia työllisyysasteita ja pienituloisuusosuusasteita (60% mediaanitulosta). 
 ```{r}
-syntyvyys_reg = bas.lm(hedelmallisyysluku ~pienituloisuus_0_17 + pienituloisuus_18_24 + pienituloisuus_25_34 + pienituloisuus_35_49 + pienituloisuus_50_64  + lapsikuolleisuus + tyollisyysaste_miehet_15_24_lag1 + tyollisyysaste_naiset_25_34_lag1 + tyollisyysaste_miehet_35_44_lag1 + tyollisyysaste_naiset_15_24_lag1 + tyollisyysaste_miehet_25_34_lag1 + tyollisyysaste_naiset_35_44_lag1 + synnyttajien_keskiika + avioliitot + avioerot + elakemeno + kaupungissaasuvat + maaseudulla + sisakaupungissa, data = syntyvyysaineisto_redusoitu,
+syntyvyys_reg = bas.lm(hedelmallisyysluku ~pienituloisuus_18_24 + pienituloisuus_25_34 + lapsikuolleisuus + synnyttajien_keskiika + avioituvuus_naiset_25_29_lag1 + avioituvuus_naiset_30_34_lag1 + elakemeno + kaupungissaasuvat + maaseudulla + sisakaupungissa, data = syntyvyysaineisto_redusoitu,
 prior = "ZS-null", modelprior = uniform())
 ```
 
@@ -248,8 +209,6 @@ round(summary(syntyvyys_reg),3)
 Kuten edelläkin, alle 18-vuotiaiden pienituloisuus liittyy hedelmällisyyslukuun, tälläkin kertaa regressiokerroin on vain -0,018. Tällöin 1 %-yksikön alenema alle 18-vuotiaiden pienituloisuudessa liittyisi hedelmällisyysluvun kasvuun 1,49:stä 1,51:een. Nyt kuitenkaan 50-64 -vuotiaiden pienituloisuus ei näytä liittyvän hedelmällisyyslukuun, kun taas 25-34 -vuotiaiden pienituloisuus kytkeytyy regressiokertoimella -0,014 ja mahdollisesti myös 28-24 -vuotiaiden pienituloisuus (kerroin -0,004). Kaikka nämä kertoimet ovat pieniä.
 
 Kaupungistuminen liittyy jälleen regression mukaan hedelmällisyyslukuun kertoimella 0,23. Tällöin 1 %-yksikön kasvu kaupungistumisessa kasvattaisi hedelmällisyyslukua 1,49:stä 1,72:ään. Kaupungistumisen aikasarja on hitaasti kasvava ja tasainen. Tiedetään, että Suomen suurissa kaupungeissa on alimmat hedelmällisyysluvut, joten tulos on vähintäänkin yllättävä, eikä kovin uskottava.
-
-Viivästetyt naisten työllisyysasteet kytkeytyvät hedelmällisyyslukuun 20-24 ja 25-29 -vuotiailla. Regressiokertoimet ovat -0,009 ja 0,011. Etumerkkien erilaisuus viittaa mahdolliseen multikollineaarisuusongelmaan. Regressiokerrointen mukaan 20-24 -vuotiaiden työllisyysasteen kasvu alentaisi hedelmällisyyslukua hienoisesti, kun taas 25-29 -vuotiaiden työllisyysasteen kasvu nostaisi hieman hedelmällisyyslukua. On mahdollista, että kertoimet tosiaan menevät näin, mutta eivät juurikaan kerro voimakkaasta yhteydestä työllisyysasteen ja syntyvyyden välillä. Miestn työllisyysasteet eivät juurikaan kytkeydy työllisyyteen.
 
 Synnyttäjien keski-ikä kytkeytyy vahvasti hedelmällisyyslukuun, kuten aiemminkin.
 
@@ -272,7 +231,50 @@ df<-data.frame(vuosi,hedelmallisyysluku,fit)
 ggplot(df,aes(x=vuosi))+geom_line(aes(y=hedelmallisyysluku,colour="green"))+geom_line(aes(y=fit,colour="red")) + scale_color_discrete(name = "Hedelmällisyysluku", labels = c("Aineisto", "Sovite"))
 ```
 
-Työllisyysaste vaikuttaisi olevan työttömyysastetta parempi selittävä tekijä muutoksille hedelmällisyysluvussa.
+## Työttömyys ja pienituloisuus ja hedelmällisyysluvun muutokset
+
+Yritetään sitten selittää hedelmällisyysluvun muutoksia käyttäen faktoreina ikäluokka- ja sukupuolikohtaisia työttömyysasteita (viivästettynä) ja pienituloisuusosuusasteita (60% mediaanitulosta), synnyttäjien keski-ikää, avioliitot ja avioerot, eläkemenon osuutta BKT:stä sekä ulommassa kaupungissa, maaseudulla ja sisemmässä kaupungissa asuvien osuuksia.
+```{r}
+syntyvyys_reg = bas.lm(hedelmallisyysluku ~pienituloisuus_18_24 + pienituloisuus_25_34 + 
+lapsikuolleisuus + miesten_tyottomyysaste_15_24_lag1 + naisten_tyottomyysaste_15_24_lag1 + miesten_tyottomyysaste_25_34_lag1 +naisten_tyottomyysaste_25_34_lag1 + synnyttajien_keskiika + avioituvuus_naiset_25_29_lag1 + avioituvuus_naiset_30_34_lag1 + elakemeno + kaupungissaasuvat + maaseudulla + sisakaupungissa, data = syntyvyysaineisto_redusoitu,
+prior = "ZS-null", modelprior = uniform())
+```
+
+Tuloksista näkyy selvästi, että sisemmässä kaupungissa ja maaseudulla asuvien osuus väestöstä liittyy kytkeytyy selvästi hedelmällisyyslukuun. Muita vaikuttavia, mutta vähemmän merkittäviä tekijöitä ovat synnyttäjien keski-ikä, 
+Ja kun katsomme tuloksia, näkyy malli, jossa faktoreina ovat 30-34 -vuotiaiden naisten työllisyysaste, 20-23 -vuotiaiden naisten työllisyysaste, ja 24-39 -vuotiaiden naisten lukumäärä. Näillä faktoreilla on mahdollista selittää noin 95 % syntyneiden lukumäärän varianssista datassa.
+
+```{r, message = FALSE, warning = FALSE, echo=FALSE}
+round(summary(syntyvyys_reg),3)
+```
+
+Viivästetyt naisten työttömyysasteet kytkeytyvät hedelmällisyyslukuun 15-24 ja 25-34 -vuotiailla. Regressiokertoimet ovat -0,009 ja 0,011. Etumerkkien erilaisuus viittaa mahdolliseen multikollineaarisuusongelmaan. Regressiokerrointen mukaan 15-24 -vuotiaiden työllisyysasteen kasvu alentaisi hedelmällisyyslukua hienoisesti, kun taas 25-34 -vuotiaiden työllisyysasteen kasvu nostaisi hieman hedelmällisyyslukua. On mahdollista, että kertoimet tosiaan menevät näin, mutta eivät juurikaan kerro voimakkaasta yhteydestä työllisyysasteen ja syntyvyyden välillä. Miesten työllisyysasteet eivät juurikaan kytkeydy työllisyyteen.
+
+Alle 18-vuotiaiden pienituloisuus liittyy hedelmällisyyslukuun, mutta regressiokerroin on vain -0,02. Tällöin 1 %-yksikön alenema alle 18-vuotiaiden pienituloisuudessa liittyisi hedelmällisyysluvun kasvuun 1,49:stä 1,51:een. Myös 50-64 -vuotiaiden pienituloisuus liittyy hedelmällisyyslukuun, mutta regressiokerroin on +0,0089. Positiivinen etumerkki viittaa tässä tapauksessa multikollineaarisuusongelmaan, mutta jos uskomme kertoimen olevan oikein, liittyisi 1 %-yksikön pieneneminen 50-64 -vuotiaiden pienituloisuudessa hedelmällisyysluvun alenemiseen 1,49:stä 1,48:aan. Kyse ei siis olisi isoäiti-efektistä, jossa isovanhempien apu lastenhoidossa lisäisi syntyvyttää. Tämä kerroin ei vaikuta uskottavalta.
+
+Sisemmässä kaupungissa asuvien osuus liittyy regression mukaan hedelmällisyyslukuun kertoimella -0,198. Tällöin 1 %-yksikön kasvu kaupungistumisessa kasvattaisi hedelmällisyyslukua 1,49:stä 1,69:ään. Kaupungistumisen aikasarja on hitaasti kasvava ja tasainen. Tiedetään, että Suomen suurissa kaupungeissa on alimmat hedelmällisyysluvut, joten tulos on vähintäänkin yllättävä, eikä kovin uskottava.
+
+Synnyttäjien keski-ikä kytkeytyy vahvasti hedelmällisyyslukuun (-0,15). Jos synnyttäjien keski-ikä alenisi yhden vuoden, kasvaisi hedelmällisyysluku 1,49:stä 1,64:ään, jos arvio regressiokertoimesta on oikea.
+
+```{r, message = FALSE, warning = FALSE, echo=FALSE}
+syntyvyys_coef=coef(syntyvyys_reg,estimator="BMA")
+syntyvyys_coef
+```
+
+Tarkastetaan vielä, millaisia residuaaleja jää selittämättä mallilla
+```{r, message = FALSE, warning = FALSE, echo=FALSE}
+plot(syntyvyys_reg,1)
+```
+
+Ja lopuksi verrataan mallin sovitetta 
+
+```{r, message = FALSE, warning = FALSE, echo=FALSE}
+fit<-fitted(syntyvyys_reg)
+vuosi<-syntyvyysaineisto_redusoitu$vuosi[1:27]
+hedelmallisyysluku<-syntyvyysaineisto_redusoitu$hedelmallisyysluku[1:27]
+df<-data.frame(vuosi,hedelmallisyysluku,fit)
+ggplot(df,aes(x=vuosi))+geom_line(aes(y=hedelmallisyysluku,colour="green"))+geom_line(aes(y=fit,colour="red")) + scale_color_discrete(name = "Hedelmällisyysluku", labels = c("Aineisto", "Sovite"))
+```
+
 
 # Synnyttäjien keski-ikään vaikuttavat faktorit
 
@@ -288,14 +290,14 @@ Ja kun katsomme tuloksia, parhaana näkyy malli, jossa faktoreina ovat 25-34 -vu
 round(summary(keskiika_reg),3)
 ```
 
-Regressiokertoimien suuruudesta näkyy, että 25-34 -vuotiaiden naisten työllisyysaste alentaa keski-ikää. Regressiokerroin on -0,02, jolloin 1 prosenttiyksikön kasvu työllisyysasteessa alentaisi keski-ikää 0,02 vuotta. Maaseudulla asuvien osuuden kasvu yhdellä prosenttiyksiköllä alentaisi keski-ikää 0,18 vuotta, kun taas keskustoissa asuvien osuuden kasvu yhdellä prosenttiyksiköllä kasvattaisi keski-ikää 0,26 vuotta.
+Regressiokertoimien suuruudesta näkyy, että 25-34 -vuotiaiden naisten työllisyysaste alentaa keski-ikää. Regressiokerroin on -0,02, jolloin 1 prosenttiyksikön kasvu työllisyysasteessa alentaisi keski-ikää 0,02 vuotta. Maaseudulla asuvien osuuden kasvu yhdellä prosenttiyksiköllä alentaisi keski-ikää 0,18 vuotta, kun taas sisemmässä kaupungissa asuvien osuuden kasvu yhdellä prosenttiyksiköllä kasvattaisi keski-ikää 0,26 vuotta.
 
 ```{r, message = FALSE, warning = FALSE, echo=FALSE}
 keskiika_coef=coef(keskiika_reg,estimator="BMA")
 keskiika_coef
 ```
 
-Regressiokerrointen mukaan 25-45 -vuotiaiden naisten työllisyysaste on tärkeä selittäjä synnyttäjien keski-iälle. Sen nousu alentaa keski-ikää. Muita tärkeitä tekijöitä ovat maaseudulla asuvien osuus ja keskustoissa asuvien osuus. Maaseudulla asuvien osuuden alenemine nostaa synnyttäjien keski-ikää. Myös keskustoissa asuvien osuuden *kasvu* nostaa synnyttäjien keski-ikää.
+Regressiokerrointen mukaan 25-45 -vuotiaiden naisten työllisyysaste on tärkeä selittäjä synnyttäjien keski-iälle. Sen nousu alentaa keski-ikää. Muita tärkeitä tekijöitä ovat maaseudulla asuvien osuus ja sisemmässä kaupungissa asuvien osuus. Maaseudulla asuvien osuuden alenemine nostaa synnyttäjien keski-ikää. Myös sisemmässä kaupungissa asuvien osuuden *kasvu* nostaa synnyttäjien keski-ikää.
 
 Tarkastetaan vielä, millaisia residuaaleja jää selittämättä mallilla. Kuvion mukaan residuaalit käyttäytyvät hyvin.
 ```{r, message = FALSE, warning = FALSE, echo=FALSE}
@@ -333,7 +335,7 @@ syntyvyys_coef=coef(syntyvyys_reg,estimator="BMA")
 syntyvyys_coef
 ```
 
-Kolmella faktorilla, keskustoissa ja maaseudulla asuvien osuudet sekä synnyttäjien keski-ikä, selittävät tässä aineistossa noin 96 % varianssista. Työsuhteiden tyypin merkitys on selvästi näitä vähäisempi. Regressiokerrointen etumerkit kertovat, että jatkuvien työsuhteiden osuuden kasvu voi erittäin lievästi kasvattaa hedelmällisyyslukua, mutta selitysvoimaa näillä tekijöillä ei ole.
+Kolmella faktorilla, sisemmässä kaupungissa ja maaseudulla asuvien osuudet sekä synnyttäjien keski-ikä, selittävät tässä aineistossa noin 96 % varianssista. Työsuhteiden tyypin merkitys on selvästi näitä vähäisempi. Regressiokerrointen etumerkit kertovat, että jatkuvien työsuhteiden osuuden kasvu voi erittäin lievästi kasvattaa hedelmällisyyslukua, mutta selitysvoimaa näillä tekijöillä ei ole.
 
 Tarkastetaan vielä, millaisia residuaaleja jää selittämättä mallilla. Numeroidut residuaalit ovat outliereita.
 ```{r, message = FALSE, warning = FALSE, echo=FALSE}
@@ -356,17 +358,19 @@ Vaikka tällä tutkimuksella ei pääse kiinni syntyvyyden laskun kausaalisiin s
 
 Yksi tässäkin tutkimuksessa selvästi esille tullut tekijä hedelmällisyysluvun laskulle on synnyttäneiden keski-iän nousu. Se kertoo selvästi siitä, että 20-24 -vuotiaat naiset saavat lapsia selvästi aiempaa vähemmän, samoin 25-29 -vuotiaat. Tämä saattaa johtua asennemuutoksesta, mutta myös kaupungistuminen, pienituloisuus ja työttömyys kytkeytyivät tässä tutkimuksessa synnyttäneiden keski-iän nousuun. Synnyttäneiden keski-ikä nousee, koska 20-24 -vuotiaat saavat vähemmän lapsia, mutta vahvin kytkentä keski-iän nousuun on kaupungistumisella ja 25-34 -vuotiaiden naisten työllisyysasteella. 
 
-Tilastokeskuksen tiedoista tiedetään, että kaupungeissa syntyvyys on alempaa kuin muussa maassa: "Vastaavasti matalin syntyvyys oli jaksolla 2013–2017 Helsingissä, jossa kokonaishedelmällisyysluku oli 1,27. Turussa luku oli 1,29 ja Tampereella 1,34. Myös kaikkien kuntien vertailussa viimeksi mainittujen kaupunkien syntyvyys oli matalimpien joukossa." (Tilastokeskus, väestörakenne 2018). On kuitenkin epäselvää, missä määrin kaupungistuminen aiheuttaa alempaa syntyvyyttä. Se saattaa olla yksi selitys, ja havainnot urbanisaation assosiaatiosta alempaan syntyvyyteen tukee tätä. Mahdollinen syy voi olla esimerkiksi se, että kaupungeissa on kalliimpaa hankkia perheille sopivia asuntoja. Regressiokerrointen mukaan keskustoissa asuvien osuuden kasvu alentaa syntyvyyttä ja lykkää lasten hankintaa. Kaupungeissa, mutta keskustojen ulkopuolella asuvien osuuden kasvu näyttäisi mahdollisesti lisäävän syntyvyyttä ja vähentävän lastenhankinnan lykkäämistä. Myös maaseudulla asuvien osuus lisää syntyvyyttä ja vähentää lykkäämmistä.
+Tilastokeskuksen tiedoista tiedetään, että kaupungeissa syntyvyys on alempaa kuin muussa maassa: "Vastaavasti matalin syntyvyys oli jaksolla 2013–2017 Helsingissä, jossa kokonaishedelmällisyysluku oli 1,27. Turussa luku oli 1,29 ja Tampereella 1,34. Myös kaikkien kuntien vertailussa viimeksi mainittujen kaupunkien syntyvyys oli matalimpien joukossa." (Tilastokeskus, väestörakenne 2018). On kuitenkin epäselvää, missä määrin kaupungistuminen aiheuttaa alempaa syntyvyyttä. Se saattaa olla yksi selitys, ja havainnot urbanisaation assosiaatiosta alempaan syntyvyyteen tukee tätä. Mahdollinen syy voi olla esimerkiksi se, että kaupungeissa on kalliimpaa hankkia perheille sopivia asuntoja. Regressiokerrointen mukaan sisemmässä kaupungissa asuvien osuuden kasvu alentaa syntyvyyttä ja lykkää lasten hankintaa. Kaupungeissa, mutta ulommassa kaupungissa asuvien osuuden kasvu näyttäisi mahdollisesti lisäävän syntyvyyttä ja vähentävän lastenhankinnan lykkäämistä. Myös maaseudulla asuvien osuus lisää syntyvyyttä ja vähentää lykkäämmistä.
 
-Hiilamo (2017) arvioi, että työttömyys kytkeytyy hedelmällisyyslukuun merkityksellisellä regressiokertoimella -0,12. Se on merkittävästi suurempi kuin tässä tutkimuksessa löytyneet regressiokertoimet (suuruusluokka -0,001), jotka eivät olleet kovin vahvasti kytkeytyneitä. Työllisyysasteet tuottivat hieman parempi tuloksia kuin työttömyysasteet.
+Hiilamo (2017) arvioi, että työttömyys kytkeytyy hedelmällisyyslukuun merkityksellisellä regressiokertoimella -0,12. Se on merkittävästi suurempi kuin tässä tutkimuksessa löytyneet regressiokertoimet (suuruusluokka -0,01), jotka eivät olleet kovin vahvasti kytkeytyneitä. Työllisyysasteet tuottivat hieman parempi tuloksia kuin työttömyysasteet.
 
 Pienituloisuus kytkeytyi tutkimuksessa lievästi hedelmällisyysluvun laskuun. Eurostatin mukaan materiaalinen deprivaatio  (Severe material deprivation) on Suomessa vähentynyt yhtäjaksoisesti vuodesta 2010 alkaen. 
 
-Ehkä yllättävin tekijä, joka regressiokerrointen mukaan lisäsi syntyvyyttä, on tässä tutkimuksessa avioerojen määrän kasvu. Tälle ei löytynyt selkeää syytä. Tässä tutkimuksessa aineisto koostui pienestä määrästä havaintoja. Tästä syystä tuloksiin on syytä suhtautua varovaisuudella, vaikka usealle löydetylle tekijälle on selkeä selitys.
+Avioituvuus erityisesti 30-34-vuotiailla kytkeytyy selvästi syntyneiden lasten määrään. Suurin osa lapsiperheistä on edelleen avioperheitä. Ainakin aiemmin on argumentoitu, että verrattuna avoliittoihin, avioliitoissa syntyy enemmän lapsia. Kyse voi olla myös valinnasta, mutta osaltaan avioituvuuden aleneminen kertoo asennemuutoksesta.
+
+Tässä tutkimuksessa aineisto koostui pienestä määrästä havaintoja. Tästä syystä tuloksiin on syytä suhtautua varovaisuudella, vaikka usealle löydetylle tekijälle on selkeä selitys.
 
 ## Johtopäätökset
 
-Syntyvyyden laskua selittää muutokset synnytysikäisten naisten lukumäärässä ja hedelmällisyysluvussa. Synnytysikäisten naisten lukumäärä muuttuu hitaasti, mutta hedelmällisyysluku on laskenut nopeasti vuoden 2010 jälkeen. Sen selittäminen onnistuu tarkastelluilla malleilla vaillinaisesti, mutta kaupungistumisella ja työllisyysasteella vaikuttaisi olevan kytkentä hedelmällisyysluvun laskuun. Sitä vastoin tarkastellussa aineistossa eläkemenolla, pienituloisuudella, alle 1-vuotiaiden kuolleisuuden laskulla tai työsuhdetyyppien muutoksella ei näyttänyt olevan suurta kytkentää hedelmällisyyslukuun. 
+Syntyvyyden laskua selittää muutokset synnytysikäisten naisten lukumäärässä ja hedelmällisyysluvussa. Synnytysikäisten naisten lukumäärä muuttuu hitaasti, mutta hedelmällisyysluku on laskenut nopeasti vuoden 2010 jälkeen. Hedelmällisyysluvun muutosten selittäminen onnistuu tarkastelluilla malleilla vaillinaisesti, mutta avioituvuudella, kaupungistumisella ja työllömyysasteella vaikuttaisi olevan kytkentä hedelmällisyysluvun laskuun. Sitä vastoin tarkastellussa aineistossa eläkemenolla, alle 1-vuotiaiden kuolleisuuden laskulla tai työsuhdetyyppien muutoksella ei näyttänyt olevan juurikaan kytkentää hedelmällisyyslukuun. 
 
 # Viittaukset
 Becker, G.S., Barro, R.J., Reformulation of the economic theory of fertility, The quarterly journal of economics, 1988 
@@ -386,8 +390,10 @@ Miettinen, A., Miksi syntyvyys laskee? Suomalaisten lastensaantiin liittyviä to
 
 Miettinen, A., Jalovaara, M. Stable employment – more babies? Life stage and educational differences in the effects of labour market attachment on first birth among Finnish men and women. Working Papers on Social and Economic Issues 15/2016, Turku Center for Welfare Research, 2016
 
+Tikanmäki, H., Huomisen aikuiset syntyvät nyt, Eläketurvakeskuksen blogi https://www.etk.fi/blogit/huomisen-aikuiset-syntyvat-nyt/, 2017
 
-# Aika-sarjat
+
+# Liite: Aika-sarjojen kuvaukset
 
 *syntyneet*
 Syntyneiden lasten lukumäärä. Lähde: Tilastokeskus
@@ -441,3 +447,13 @@ Tilastokeskus
 *miesten_tyottomyysaste_15_24_lag1, naisten_tyottomyysaste_15_24_lag1, miesten_tyottomyysaste_25_34_lag1, naisten_tyottomyysaste_25_34_lag1, miesten_tyottomyysaste_35_44_lag1, naisten_tyottomyysaste_35_44_lag1*
 Yhden vuoden viivästetty 10-vuotisikäluokittainen työttömyysaste miehille ja naisille
 Lähde: Tilastokeskus
+
+# Liite: Kaupunkialueet
+
+**Sisempi kaupunkialue**
+Sisempi kaupunkialue kuvaa kaupunkien tiivistä ja yhtenäistä tehokkaasti rakennettua aluetta. Sisemmällä kaupunkialueella lähiympäristön vallitseva aluetehokkuus on vähintään 0,1, joka vastaa tiivistä pientaloaluetta. Sisemmästä kaupunkialueesta irrallaan sijaitsevat korkean aluetehokkuuden alueet sisällytetään ulompaan kaupunkialueeseen. Jokaisella keskustaajamalla voi olla vain yksi sisempi kaupunkialue. Poikkeuksen tästä muodostavat Helsingin kaupunkiseudulla sijaitsevat kaupungit Järvenpää ja Kerava, joille muodostetaan oma sisempi kaupunkialue.
+Lähde: Ympäristöministeriö
+
+**Ulompi kaupunkialue**
+Ulompi kaupunkialue koostuu erillisistä lähiöistä, kaupan, teollisuuden ja toimistojen reunakaupungista sekä toisaalta kaupungin viheralueista ja alemman tehokkuuden asuinalueista, jotka kuitenkin ovat selvästi osa yhtenäistä kaupunkialuetta. Ulommalla kaupunkialueella kolmasosa lähiympäristöstä on vähintään 0,02 aluetehokkuuden aluetta. Tällä kriteerillä ulomman kaupunkialueen ulkoraja estimoi asemakaavoitetun alueen ulkorajaa ja näin suunnitellusti rakennettua yhtenäistä kaupunkialuetta.
+Lähde: Ympäristöministeriö
