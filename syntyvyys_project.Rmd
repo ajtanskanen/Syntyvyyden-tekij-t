@@ -14,9 +14,7 @@ output:
 library(ggplot2)
 library(dplyr)
 library(statsr)
-library(GGally)
 library(BAS)
-library(gridExtra)
 source("dualplot.R")
 ```
 
@@ -38,9 +36,9 @@ Tässä tutkimuksessa tavoitteena on hakea eri tekijöiden merkitystä syntyvyyd
 
 ## Aineisto
 
-Tutkimuksessa käytetty aikasarja-aineisto on peräisin tilastokeskuksen StatFin-tietokannasta, ETK:lta ja Human Mortality Databasesta. Aineisto koostuu vuosien 1989-2017 datasta. Väestörakenteesta (Tilastokeskus) mukana on syntyneidet lukumäärät, kokonaishedelmällisyysluvut, synnyttäjien keski-ikä ja naisten lukumäärät 5-vuotisikäryhmittäin. Mukana ovat myös avioliittojen ja avioerojen määrät (Tilastokeskus).
+Tutkimuksessa käytetty aikasarja-aineisto on peräisin tilastokeskuksen StatFin-tietokannasta, ETK:lta ja Human Mortality Databasesta. Aineisto koostuu vuosien 1989-2017 datasta. Väestörakenteesta (Tilastokeskus) mukana on syntyneidet lukumäärät, kokonaishedelmällisyysluvut, synnyttäjien keski-ikä ja naisten lukumäärät 5-vuotisikäryhmittäin. Mukana ovat myös avioliittojen määrät 10-vuotisikäluokittain suhteutettuna ikäluokkien suuruuteen (Tilastokeskus).
 
-Työllisyyttä (Tilastokeskus) kuvataan 10-vuotisikäluokittaisilla työllisyysasteilla sukupuolittain, 10-vuotisikäluokkakohtaisista työttömyysasteista sukupuolittain, ja työsuhteiden tyyppitiedoilla (jatkuva/määräaikainen; kokoaikainen/osa-aikainen) vuosilta 1997-2017. Pienituloisuutta kuvaa 10-vuotisikäluokittainen pienituloisten osuus (tulos alle 60 % mediaanitulosta) väestöstä (Tilastokeskus). Kaupungistumista kuvaa maalla, ulommassa kaupungissa ja sisemmässä kaupungissa asuvien osuudet väestöstä (Tilastokeskus) 
+Työllisyyttä (Tilastokeskus) kuvataan 10-vuotisikäluokittaisilla työllisyysasteilla sukupuolittain, 10-vuotisikäluokkakohtaisista työttömyysasteista sukupuolittain (suhteutettu ikäluokan kokoon, ), ja työsuhteiden tyyppitiedoilla (jatkuva/määräaikainen; kokoaikainen/osa-aikainen) vuosilta 1997-2017. Pienituloisuutta kuvaa 10-vuotisikäluokittainen pienituloisten osuus (tulos alle 60 % mediaanitulosta) väestöstä (Tilastokeskus). Kaupungistumista kuvaa maalla, ulommassa kaupungissa ja sisemmässä kaupungissa asuvien osuudet väestöstä (Tilastokeskus) 
 Eläkejärjestelmän vaikutusta syntyvyyteen yritetään selvittää käyttämällä vertailukohtana eläkemenoa BKT:stä (Eläketurvakeskus). Lapsikuolleisuus (Human mortality database)
 
 Kaikkiaan lähtöaineistossa on 39 aikasarjaa, joissa on 29 havaintoa vuosilta 1989-2017, tosin osasta aikasarjoja vuosien 1989 ja/tai 2017 luvut puuttuvat. Pidempiä aikasarjoja löytyy syntyneistä, naisten 5-vuotisikäluokittaisesta määrästä ja hedelmällisyysluvusta. Näistä käytetään aikasarjoja vuosilta 1970-2017.
@@ -89,15 +87,13 @@ tyyppiaineisto<-tyyppiaineisto[2:22,]
 Syntyneiden määrä noudattelee melko hyvin muutoksia hedelmällisyysluvussa
 
 ```{r, message = FALSE, warning = FALSE , echo = FALSE}
-plot.one <- dualplot(syntyvyysaineisto_redusoitu$vuosi,syntyvyysaineisto_redusoitu$syntyneita,syntyvyysaineisto_redusoitu$hedelmallisyysluku,ylab1="Syntyneitä",ylab2="Hedelmällisyysluku")
-plot.one
+dualplot(syntyvyysaineisto_redusoitu$vuosi,syntyvyysaineisto_redusoitu$syntyneita,syntyvyysaineisto_redusoitu$hedelmallisyysluku,ylab1="Syntyneitä",ylab2="Hedelmällisyysluku")
 ```
 
 Toinen syntyneiden määrää selittävä tekijä on synnytysikäisten naisten lukumäärä. Kun tarkastellaan 25-29 -vuotiaiden naisten määrää, näkyy, että vuoteen 2010 asti köyrät kulkevat yhtä matkaa. Sen jälkeen ne erkautuvat. 
 
 ```{r, message = FALSE, warning = FALSE , echo = FALSE}
-plot.two <- dualplot(syntyvyysaineisto_redusoitu$vuosi,syntyvyysaineisto_redusoitu$syntyneita,syntyvyysaineisto_redusoitu$naisten_lkm_25_29,ylab1="Syntyneitä",ylab2="25-29 -vuotiaita naisia")
-plot.two
+dualplot(syntyvyysaineisto_redusoitu$vuosi,syntyvyysaineisto_redusoitu$syntyneita,syntyvyysaineisto_redusoitu$naisten_lkm_25_29,ylab1="Syntyneitä",ylab2="25-29 -vuotiaita naisia")
 ```
 
 Sama ilmiö näkyy myös 30-34 -vuotiaiden naisten määrässä
@@ -112,17 +108,23 @@ Ja  myös 35-39 -vuotiaiden naisten määrässä
 dualplot(syntyvyysaineisto_redusoitu$vuosi,syntyvyysaineisto_redusoitu$syntyneita,syntyvyysaineisto_redusoitu$naisten_lkm_24_39,ylab1="Syntyneitä",ylab2="24-39 -vuotiaita naisia")
 ```
 
-Urbaanistiasuvien osuus Suomessa on vahvasti negatiivisesti korreloitunut hedelmällisyysluvun kanssa
+Sisemmässä kaupungissa asuvien osuus väestöstä Suomessa on vahvasti negatiivisesti korreloitunut hedelmällisyysluvun kanssa
 
 ```{r, message = FALSE, warning = FALSE , echo = FALSE}
 dualplot(syntyvyysaineisto_redusoitu$vuosi,syntyvyysaineisto_redusoitu$hedelmallisyysluku,syntyvyysaineisto_redusoitu$sisakaupungissa,ylab1="Hedelmällisyysluku",ylab2="Kaupungistuminen")
+```
+
+Avioituvuus on korreloitunut hedelmällisyysluvun kanssa
+
+```{r, message = FALSE, warning = FALSE , echo = FALSE}
+dualplot(syntyvyysaineisto_redusoitu$vuosi,syntyvyysaineisto_redusoitu$hedelmallisyysluku,syntyvyysaineisto_redusoitu$avioituvuus_naiset_30_34,ylab1="Hedelmällisyysluku",ylab2="30-34 -vuotiaiden naisten avioituvuus")
 ```
 
 * * *
 
 ## Mikä selittää vaihtelun syntyneiden lasten määrässä?
 
-Aloitetaan yksinkertaisesta mallista syntyneiden lukumäärälle: mukana vain hedelmällisyysluku ja synnytysikäisten naisten lukumäärät. Arvioidaan näille tekijöille regressiokertoimet bayesilaisilla menetelmillä.
+Aloitetaan yksinkertaisesta mallista syntyneiden lukumäärälle: mukana vain hedelmällisyysluku ja synnytysikäisten naisten lukumäärät. Kokonaishedelmällisyysluku kuvaa "Kokonaishedelmällisyysluku saadaan laskemalla yhteen yhdelle ikävuodelle lasketut hedelmällisyysluvut" (Tilastokeskus), joten se on hyvin lähellä syntyvyyttä per nainen kunakin vuonna. Kun huomioidaan naisten lukumäärän muutos, pitäisi tuloksena olla hyvin syntyvyyden muutoksia selittävä malli. Arvioidaan näille tekijöille regressiokertoimet bayesilaisilla menetelmillä.
 
 ```{r, message = FALSE, warning = FALSE}
 syntyvyys_base = bas.lm(syntyneita ~ hedelmallisyysluku + naisten_lkm_15_19 + naisten_lkm_20_24 +naisten_lkm_25_29 + naisten_lkm_30_34 +naisten_lkm_35_39 + naisten_lkm_40_45 + naisten_lkm_45_49, 
@@ -165,8 +167,7 @@ plot(syntyvyys_base,1)
 Havainnollisuuden vuoksi voi sanoa, että syntyneiden määrälle regressio ehdottaa yksinkertaisen mallin
 $$S=59550+33910H+0.038N_{20-24}+0.116N_{25-29}+0.105N_{30-34}+0.0618N_{35-39}$$
 
-missä H on hedelmällisyysluvun poikkeama vuosien 1989-2017 keskiarvosta ja N_{x-y}:t ovat x-y -ikäisten naisten lukumäärien poikkeamia vuosien 1989-2017 keskiarvosta. Tulkinta vakiotermille tässä yhteydessä on se, että se huomioi faktoreiden keskiarvojen vaikutuksen syntyneiden lukumäärään. Tämä regressiomalli ei tietenkään huomioi epävarmuutta, joka näkyy täydellisessä Bayes-mallissa.
-
+missä H on hedelmällisyysluvun poikkeama vuosien 1989-2017 keskiarvosta ja N_{x-y}:t ovat x-y -ikäisten naisten lukumäärien poikkeamia vuosien 1989-2017 keskiarvosta. Tulkinta vakiotermille tässä yhteydessä on se, että se huomioi faktoreiden keskiarvojen vaikutuksen syntyneiden lukumäärään. Tämä regressiomalli ei tietenkään huomioi epävarmuutta, joka näkyy täydellisessä Bayes-mallissa. Mallin selitysvoima osoittaa, että menetelmä näyttää toimivan juuri niin kuin tarkoitus on.
 
 ## Pidempi aineisto
 
@@ -390,6 +391,7 @@ keskiika_coef
 ```
 
 Tarkastetaan vielä, millaisia residuaaleja jää selittämättä mallilla. Kuvion mukaan residuaalit käyttäytyvät hyvin.
+
 ```{r, message = FALSE, warning = FALSE, echo=FALSE}
 plot(keskiika_reg,1)
 ```
@@ -428,6 +430,7 @@ syntyvyys_coef
 ```
 
 Tarkastetaan vielä, millaisia residuaaleja jää selittämättä mallilla. Numeroidut residuaalit ovat outliereita. Selvästi viime vuosien hedelmällisyysluvun lasku jää osin selittämättä myös tällä mallilla.
+
 ```{r, message = FALSE, warning = FALSE, echo=FALSE}
 plot(syntyvyys_reg,1)
 ```
