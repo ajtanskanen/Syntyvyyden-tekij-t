@@ -1,7 +1,8 @@
 ---
 title: "Syntyvyyden lasku ja sen mahdolliset selitykset - LUONNOS"
 author: "Antti Tanskanen"
-date: "11.5.2018"
+affiliation: "Elinkeinoelämän keskusliitto EK"
+date: "12.5.2018"
 output:
   html_document:
     fig_height: 4
@@ -464,7 +465,7 @@ Tässä tutkimuksessa aineisto koostui pienestä määrästä havaintoja. Täst�
 
 ## Johtopäätökset
 
-Syntyvyyden laskua selittää muutokset synnytysikäisten naisten lukumäärässä ja hedelmällisyysluvussa. Synnytysikäisten naisten lukumäärä muuttuu hitaasti, mutta hedelmällisyysluku on laskenut nopeasti vuoden 2010 jälkeen. Hedelmällisyysluvun muutosten selittäminen onnistuu tarkastelluilla malleilla vaillinaisesti, mutta avioituvuudella ja  kaupungistumisella vaikuttaisi olevan kytkentä hedelmällisyysluvun laskuun. Sitä vastoin tarkastellussa aineistossa eläkemenolla, alle 1-vuotiaiden kuolleisuuden laskulla tai työsuhdetyyppien muutoksella ei näyttänyt olevan juurikaan kytkentää hedelmällisyyslukuun. 
+Syntyvyyden laskua selittää muutokset synnytysikäisten naisten lukumäärässä ja hedelmällisyysluvussa. Synnytysikäisten naisten lukumäärä muuttuu hitaasti, mutta hedelmällisyysluku on laskenut nopeasti vuoden 2010 jälkeen. Hedelmällisyysluvun muutosten selittäminen onnistuu tarkastelluilla malleilla vaillinaisesti, mutta avioituvuudella ja  kaupungistumisella sekä lasten hankinnan lykkäämisellä vaikuttaisi olevan kytkentä hedelmällisyysluvun laskuun. Sitä vastoin tarkastellussa aineistossa eläkemenolla, alle 1-vuotiaiden kuolleisuuden laskulla tai työsuhdetyyppien muutoksella ei näyttänyt olevan juurikaan kytkentää hedelmällisyyslukuun. 
 
 # Viittaukset
 Becker, G.S., Barro, R.J., Reformulation of the economic theory of fertility, The quarterly journal of economics, 1988 
@@ -518,11 +519,11 @@ Yhden vuoden viivästetty 10-vuotisikäluokittainen työllisyysaste miehille ja 
 *synnyttajien_keskiika*
 Laskettu synnyttäneiden äitien ikien keskiarvona. Lähde: Tilastokeskus
 
-*avioliitot*
-Lähde: Tilastokeskus
+*avioituvuus_naiset_25_29, avioituvuus_naiset_30_34*
+Naisten solmittujen avioliittojen lukumäärä suhteessa samanikäisten naisten lukumäärään. Lähde: Tilastokeskus
 
 *elakemeno*
-Kokonaiseläkemeno Suomessa
+Kokonaiseläkemeno Suomessa prosentteina BKT:stä
 Lähde: Eläketurvakeskus
 
 *kaupungissaasuvat, maaseudulla, sisakaupungissa*
