@@ -450,7 +450,7 @@ ggplot(df,aes(x=vuosi))+geom_line(aes(y=hedelmallisyysluku,colour="green"))+geom
 
 Vaikka tällä tutkimuksella ei pääse kiinni syntyvyyden laskun kausaalisiin syihin, näkyy tuloksista selvästi, että syntyvyyden laskua ajaa kaksi erilaista tekijää: hedelmällisyysluvun lasku ja synnytysikäisten naisten lukumäärän lasku. Vaikeampaa on yrittää selittää, mistä hedelmällisyysluvun lasku johtuu. 
 
-Yksi tässäkin tutkimuksessa selvästi esille tullut tekijä hedelmällisyysluvun laskulle on synnyttäneiden keski-iän nousu. Se kertoo selvästi siitä, että 20-24 -vuotiaat naiset saavat lapsia selvästi aiempaa vähemmän, samoin 25-29 -vuotiaat. Tämä saattaa johtua asennemuutoksesta, mutta myös kaupungistuminen, 25-34 -vuotiaiden naisten työllisyysaste kytkeytyivät tässä tutkimuksessa synnyttäneiden keski-iän nousuun. 
+Yksi tässäkin tutkimuksessa selvästi esille tullut tekijä hedelmällisyysluvun laskulle on synnyttäneiden keski-iän nousu. Se kertoo selvästi siitä, että 20-24 -vuotiaat naiset saavat lapsia selvästi aiempaa vähemmän, samoin 25-29 -vuotiaat. Tämä saattaa johtua asenne- tai preferenssimuutoksesta, mutta myös sisäkaupungissa asuvien osuuden kasvu ja 25-34 -vuotiaiden naisten työllisyysaste kytkeytyivät tässä tutkimuksessa synnyttäneiden keski-iän nousuun. 
 
 Tilastokeskuksen tiedoista tiedetään, että kaupungeissa syntyvyys on alempaa kuin muussa maassa: "Vastaavasti matalin syntyvyys oli jaksolla 2013–2017 Helsingissä, jossa kokonaishedelmällisyysluku oli 1,27. Turussa luku oli 1,29 ja Tampereella 1,34. Myös kaikkien kuntien vertailussa viimeksi mainittujen kaupunkien syntyvyys oli matalimpien joukossa." (Tilastokeskus, väestörakenne 2018). 
 
@@ -459,7 +459,7 @@ Regressiokerrointen mukaan sisemmässä kaupungissa asuvien osuuden kasvu alenta
 Hiilamo (2017) arvioi, että työttömyys kytkeytyy hedelmällisyyslukuun merkityksellisellä regressiokertoimella -0,12. Se on selvästi suurempi kuin tässä tutkimuksessa löytyneet regressiokertoimet (suuruusluokka -0,01), jotka eivät olleet kovin vahvasti kytkeytyneitä. 
 Pienituloisuus kytkeytyi tutkimuksessa lievästi hedelmällisyysluvun laskuun, mutta sen merkitys jäi muita tekijöitä vähäisemmäksi.
 
-Suurin osa lapsiperheistä on edelleen avioperheitä. Avioituvuus erityisesti 30-34-vuotiailla kytkeytyy selvästi syntyneiden lasten määrään. Ainakin aiemmin on argumentoitu, että verrattuna avoliittoihin, avioliitoissa syntyy enemmän lapsia. Kyse voi olla myös valinnasta, mutta osaltaan avioituvuuden aleneminen kertoo asennemuutoksesta.
+Suurin osa lapsiperheistä on edelleen avioperheitä. Avioituvuus erityisesti 30-34-vuotiailla kytkeytyy selvästi syntyneiden lasten määrään. Ainakin aiemmin on argumentoitu, että verrattuna avoliittoihin, avioliitoissa syntyy enemmän lapsia. Kyse voi olla myös valinnasta, mutta osaltaan avioituvuuden aleneminen kertoo asenne- tai preferenssimuutoksesta.
 
 Tässä tutkimuksessa aineisto koostui pienestä määrästä havaintoja. Tästä syystä tuloksiin on syytä suhtautua varovaisuudella, vaikka usealle löydetylle tekijälle on selkeä selitys.
 
@@ -530,7 +530,7 @@ Lähde: Eläketurvakeskus
 Kaupungeissaasuvien osuus väestöstä, maaseudulla asuvien osuus väestöstä ja 
 Lähde: Tilastokeskus
 
-jatkuvakokoaika_miehet, jatkuvaosaaika_miehet, maaraaikakoko_miehet, maaraaikaosa_miehet, jatkuvakokoaika_naiset, jatkuvaosaaika_naiset, maaraaikakoko_naiset, maaraaikaosa_naiset
+*jatkuvakokoaika_miehet, jatkuvaosaaika_miehet, maaraaikakoko_miehet, maaraaikaosa_miehet, jatkuvakokoaika_naiset, jatkuvaosaaika_naiset, maaraaikakoko_naiset, maaraaikaosa_naiset*
 Lähde:
 Tilastokeskus, työvoimatutkimus
 
