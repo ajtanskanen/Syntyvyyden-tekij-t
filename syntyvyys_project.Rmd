@@ -1,8 +1,6 @@
 ---
 title: "Syntyvyyden lasku ja sen mahdolliset selitykset"
-author: 
-- name: "Antti J. Tanskanen"
-  affiliation: "Elinkeinoelämän keskusliitto EK"
+author: "Antti J. Tanskanen, Elinkeinoelämän keskusliitto EK"
 date: "16.5.2018"
 output:
   html_document:
@@ -340,7 +338,7 @@ data = syntyvyysaineisto_lyhyt,
 prior = "ZS-null", modelprior = uniform())
 ```
 
-Tuloksista näkyy selvästi, että samat tekijät kuin aiemmin ovat merkittäviä: sisemmässä kaupungissa ja maaseudulla asuvien osuus väestöstä sekä synnyttäjien keski-ikä liittyy kytkeytyy selvästi hedelmällisyyslukuun. Kuitenkin toisin kuin yllä, 25-34 -vuotiaiden naisten työttömyysaste vaikuttaa hedelmällisyyslukuun, ja jossain määrin myös 25-34 -vuotiaiden miesten työllisyys (osassa malleja työttömyysaste, osassa työllisyysaste). Avioituvuus ja pienituloisuus eivät tässä aineistossa näytä vaikuttavan hedelmällisyyslukuun.
+Tuloksista näkyy selvästi, että samat tekijät kuin aiemmin ovat merkittäviä: sisemmässä kaupungissa ja maaseudulla asuvien osuus väestöstä sekä synnyttäjien keski-ikä kytkeytyy selvästi hedelmällisyyslukuun. Kuitenkin toisin kuin yllä, 25-34 -vuotiaiden naisten työttömyysaste vaikuttaa hedelmällisyyslukuun, ja jossain määrin myös 25-34 -vuotiaiden miesten työllisyys (osassa malleja työttömyysaste, osassa työllisyysaste). Avioituvuus ja pienituloisuus eivät tässä aineistossa näytä vaikuttavan hedelmällisyyslukuun.
 
 Ja kun katsomme tuloksia, näkyy malli, jossa faktoreina ovat 25-29 -vuotiaiden naisten avioituvuus, sisemmässä kaupungissa asuvien osuus ja ulommassa kaupungissa asuvien osuus. Näillä kolmella faktoreilla on mahdollista selittää noin 92 % syntyneiden lukumäärän varianssista datassa.
 
