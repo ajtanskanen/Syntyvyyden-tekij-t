@@ -1,8 +1,9 @@
 ---
-title: "Syntyvyyden lasku ja sen mahdolliset selitykset - LUONNOS"
-author: "Antti Tanskanen"
-affiliation: "Elinkeinoelämän keskusliitto EK"
-date: "12.5.2018"
+title: "Syntyvyyden lasku ja sen mahdolliset selitykset"
+author: 
+- name: "Antti J. Tanskanen"
+  affiliation: "Elinkeinoelämän keskusliitto EK"
+date: "16.5.2018"
 output:
   html_document:
     fig_height: 4
