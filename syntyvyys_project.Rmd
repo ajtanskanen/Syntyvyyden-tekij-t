@@ -111,7 +111,7 @@ dualplot(syntyvyysaineisto_redusoitu$vuosi,syntyvyysaineisto_redusoitu$syntyneit
 Sisemmässä kaupungissa asuvien osuus väestöstä Suomessa on vahvasti negatiivisesti korreloitunut hedelmällisyysluvun kanssa
 
 ```{r, message = FALSE, warning = FALSE , echo = FALSE}
-dualplot(syntyvyysaineisto_redusoitu$vuosi,syntyvyysaineisto_redusoitu$hedelmallisyysluku,syntyvyysaineisto_redusoitu$sisakaupungissa,ylab1="Hedelmällisyysluku",ylab2="Kaupungistuminen")
+#dualplot(syntyvyysaineisto_redusoitu$vuosi,syntyvyysaineisto_redusoitu$hedelmallisyysluku,syntyvyysaineisto_redusoitu$sisakaupungissa,ylab1="Hedelmällisyysluku",ylab2="Kaupungistuminen")
 ```
 
 Avioituvuus on korreloitunut hedelmällisyysluvun kanssa
@@ -152,8 +152,8 @@ Kun verrataan sovitetta aineistoon, näkyy että erot ovat datan ja mallin väli
 
 ```{r, message = FALSE, warning = FALSE, echo=FALSE}
 fit<-fitted(syntyvyys_base)
-Vuosi<-syntyvyysaineisto_redusoitu$vuosi[1:27]
-Syntyneet<-syntyvyysaineisto_redusoitu$syntyneita[1:27]
+Vuosi<-syntyvyysaineisto_redusoitu$vuosi[1:28]
+Syntyneet<-syntyvyysaineisto_redusoitu$syntyneita[1:28]
 df<-data.frame(Vuosi,Syntyneet,fit)
 ggplot(df,aes(x=Vuosi))+geom_line(aes(y=Syntyneet,colour="green"))+geom_line(aes(y=fit,colour="red")) + scale_color_discrete(name = "Syntyneitä", labels = c("Aineisto", "Sovite"))
 ```
@@ -259,8 +259,8 @@ Ja lopuksi verrataan mallin sovitetta
 
 ```{r, message = FALSE, warning = FALSE, echo=FALSE}
 fit<-fitted(syntyvyys_reg)
-vuosi<-syntyvyysaineisto_redusoitu$vuosi[1:27]
-hedelmallisyysluku<-syntyvyysaineisto_redusoitu$hedelmallisyysluku[1:27]
+vuosi<-syntyvyysaineisto_redusoitu$vuosi[1:28]
+hedelmallisyysluku<-syntyvyysaineisto_redusoitu$hedelmallisyysluku[1:28]
 df<-data.frame(vuosi,hedelmallisyysluku,fit)
 ggplot(df,aes(x=vuosi))+geom_line(aes(y=hedelmallisyysluku,colour="green"))+geom_line(aes(y=fit,colour="red")) + scale_color_discrete(name = "Hedelmällisyysluku", labels = c("Aineisto", "Sovite"))
 ```
