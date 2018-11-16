@@ -1,7 +1,7 @@
 ---
-title: "Syntyvyys, sen ennustaminen ja kytkentä SOMEen"
+title: "Sosiaalisen median aktiivikäyttö ja syntyvyys"
 author: "Antti J. Tanskanen, Elinkeinoelämän keskusliitto EK"
-date: "15.11.2018"
+date: "16.11.2018"
 output:
   html_document:
     fig_height: 4
@@ -28,20 +28,21 @@ load("phones2.Rdata")
 
 ## Johdanto
 
-Syntyneiden lasten määrä on Suomessa laskenut 61 000 lapsesta vuonna 2010 noin 50 300:ään vuonna 2017. Alkuvuoden 2018 luvuilla laskemalla vaikuttaa siltä että tämän vuoden syntyneden määrä jä alle 48 000:n ja hedelmällisyysluku alle vuoden 1973 pohjien. Laskeva trendi on jatkunut koko aikavälin 2010-2018, joten satunnaisvaihtelusta tuskin on kysymys. Osan syntyneiden lukumäärän laskusta selittää synnytysikäisten naisten lukumäärän pieneneminen, mutta ei läheskään kaikkea. Muiksi selityksiksi on tarjottu mm. työttömyyttä (Hiilamo, 2017) ja miesten heikkoa työsuhteeseen kiinnittymistä (Miettinen ja Jalovaara, 2015). Muissa maissa syntyvyyden laskun on arvioitu aiheutuvan mm. lapsikuolleisuuden vähenemisestä (Becker ja Barro, 1988), kaupungistumisesta (Martine et al., 2013) ja vanhuuseläkkeiden korkeammasta korvausasteesta (Boldrin et al., 2015). Sen lisäksi että työttömyys alentaisi syntyvyyttä, taloudellisten kriisien on myös havaittu lisänneen syntyvyyttä (Kohler ja Kohler, 2002).
+Syntyneiden lasten määrä on Suomessa laskenut 61 000 lapsesta vuonna 2010 noin 50 300:ään vuonna 2017. Alkuvuoden 2018 luvuilla laskemalla vaikuttaa siltä että tämän vuoden syntyneden määrä jää ehkä 48 000:een ja hedelmällisyysluku 1,43:een alle vuoden 1973 pohjien. Laskeva trendi on jatkunut koko aikavälin 2010-2018, joten satunnaisvaihtelusta tuskin on kysymys. Osan syntyneiden lukumäärän laskusta selittää synnytysikäisten naisten lukumäärän pieneneminen, mutta ei läheskään kaikkea. Muiksi selityksiksi on tarjottu mm. työttömyyttä (Hiilamo, 2017) ja miesten heikkoa työsuhteeseen kiinnittymistä (Miettinen ja Jalovaara, 2015). Muissa maissa syntyvyyden laskun on arvioitu aiheutuvan mm. lapsikuolleisuuden vähenemisestä (Becker ja Barro, 1988), kaupungistumisesta (Martine et al., 2013) ja vanhuuseläkkeiden korkeammasta korvausasteesta (Boldrin et al., 2015). Sen lisäksi että työttömyys alentaisi syntyvyyttä, taloudellisten kriisien on myös havaittu lisänneen syntyvyyttä (Kohler ja Kohler, 2002).
 
 Syntyneiden määrällä on viiveellä vaikutusta työikäisen väestön määrään, ja sitä kautta syntyvyyden laskulla on vaikutuksia mm. sosiaaliturvan rahoituksen kestävyyteen. Eläketurvakeskuksen laskelmien mukaan syntyvyyden lasku aiheuttaa työeläkemaksussa pitkällä aikavälillä useiden prosenttiyksiköiden nousupaineen (Tikanmäki, 2017). Myös Väestöntutkimuslaitos on analysoinut syitä syntyvyyden laskulle, mutta selkeätä syytä ei ole löytynyt (Rotkirch et al, 2017)
 
-Tässä tutkimuksessa jatketaan aiemman harjoituksen mallilla ja kokeillaan miten hyvin ennuste toimii.
+Tässä tutkimuksessa jatketaan aiemman harjoituksen mallilla ja kokeillaan miten hyvin ennuste toimii. Tämän lisäksi tutkimuksessa pyritään tarkastelemaan, onko sosiaalisen median aktiivikäytön lisääntymisellä kytkentää syntyvyyden laskuun.
 
 ## Aineisto
 
-Tutkimuksessa käytetty aikasarja-aineisto on peräisin tilastokeskuksen StatFin-tietokannasta, ETK:lta ja Human Mortality Databasesta. Aineisto koostuu vuosien 1989-2017 datasta. Väestörakenteesta (Tilastokeskus) mukana on syntyneidet lukumäärät, kokonaishedelmällisyysluvut, synnyttäjien keski-ikä ja naisten lukumäärät 5-vuotisikäryhmittäin. Mukana ovat myös avioliittojen määrät 10-vuotisikäluokittain suhteutettuna ikäluokkien suuruuteen (Tilastokeskus).
+Tutkimuksessa käytetty aikasarja-aineisto on peräisin tilastokeskuksen StatFin-tietokannasta ja Human Mortality Databasesta. Aineisto koostuu vuosien 1989-2017 datasta. Väestörakenteesta (Tilastokeskus) mukana on syntyneidet lukumäärät, kokonaishedelmällisyysluvut, synnyttäjien keski-ikä ja naisten lukumäärät 5-vuotisikäryhmittäin. Mukana ovat myös avioliittojen määrät 10-vuotisikäluokittain suhteutettuna ikäluokkien suuruuteen (Tilastokeskus).
 
-Työllisyyttä (Tilastokeskus) kuvataan 10-vuotisikäluokittaisilla työllisyysasteilla sukupuolittain, 10-vuotisikäluokkakohtaisista työttömyysasteista sukupuolittain (suhteutettu ikäluokan kokoon, ), ja työsuhteiden tyyppitiedoilla (jatkuva/määräaikainen; kokoaikainen/osa-aikainen) vuosilta 1997-2017. Pienituloisuutta kuvaa 10-vuotisikäluokittainen pienituloisten osuus (tulos alle 60 % mediaanitulosta) väestöstä (Tilastokeskus). Kaupungistumista kuvaa maalla, ulommassa kaupungissa ja sisemmässä kaupungissa asuvien osuudet väestöstä (Tilastokeskus) 
-Eläkejärjestelmän vaikutusta syntyvyyteen yritetään selvittää käyttämällä vertailukohtana eläkemenoa BKT:stä (Eläketurvakeskus). Lapsikuolleisuus (Human mortality database).
+Työllisyyttä (Tilastokeskus) kuvataan 10-vuotisikäluokittaisilla työllisyysasteilla sukupuolittain, 10-vuotisikäluokkakohtaisista työttömyysasteista sukupuolittain (suhteutettu ikäluokan kokoon, ), ja työsuhteiden tyyppitiedoilla (jatkuva/määräaikainen; kokoaikainen/osa-aikainen) vuosilta 1997-2017. Kaupungistumista kuvaa sisemmässä kaupungissa, ulommassa kaupungissa ja kehyskaupungissa asuvien osuudet väestöstä (Tilastokeskus) 
 
-Kaikkiaan lähtöaineistossa on 39 aikasarjaa, joissa on 29 havaintoa vuosilta 1989-2017, tosin osasta aikasarjoja vuosien 1989 ja/tai 2017 luvut puuttuvat. Pidempiä aikasarjoja löytyy syntyneistä, naisten 5-vuotisikäluokittaisesta määrästä ja hedelmällisyysluvusta. Näistä käytetään aikasarjoja vuosilta 1970-2017.
+Verrattuna aiempiin harjoitelmiin, mukaan on otettu myös sosiaalisen median aktiivikäyttäjien osuus Tilastokeskuksen Viestintä- ja tietotekniikan käyttö-tutkimuksesta ("Seuraa jotain yhteisöpalvelua yleensä jatkuvasti kirjautuneena tai useasti päivässä").
+
+Kaikkiaan lähtöaineistossa on 53 aikasarjaa, joissa on 29 havaintoa vuosilta 1989-2017, tosin osasta aikasarjoja vuosien 1989 ja/tai 2017 luvut puuttuvat. Kaikkia aineistossa olevia muuttujia ei ole tutkimuksessa käytetty, vaan keskitytty kokeiluissa lupaavimpiin 9:ään muuttujiin. 
 
 Aineiston perusteella ei voi tehdä kausaalisia päätelmiä, ainostaan assosiatiivisuutta koskevia. Tämä tietenkin rajoittaa tulkintamahdollisuuksia.
 
@@ -72,7 +73,13 @@ syntyvyysaineisto_redusoitu <- syntyvyysaineisto_redusoitu %>% mutate(tyollisyys
        ulkopuoliset_naiset_35_44_lag1=lag(ulkopuoliset_naiset_35_44),
 
        avioituvuus_naiset_25_29_lag1=lag(avioituvuus_naiset_25_29),
-       avioituvuus_naiset_30_34_lag1=lag(avioituvuus_naiset_30_34)
+       avioituvuus_naiset_30_34_lag1=lag(avioituvuus_naiset_30_34),
+       alypuhelin=phones2$alypuhelin[1:30],
+       some_25_34=phones2$some_25_34[1:30],
+       some_35_44=phones2$some_35_44[1:30],
+       alypuhelin_lag1=lag(alypuhelin,1),
+       some_25_34_lag1=lag(some_25_34,1),
+       some_35_44_lag1=lag(some_35_44,1)
       )
 syntyvyysaineisto_ennuste <- syntyvyysaineisto_ennuste %>% mutate(tyollisyysaste_naiset_15_24_lag1=lag(tyollisyysaste_naiset_15_24,1),
        tyollisyysaste_naiset_25_34_lag1=lag(tyollisyysaste_naiset_25_34,1),
@@ -98,48 +105,62 @@ syntyvyysaineisto_ennuste <- syntyvyysaineisto_ennuste %>% mutate(tyollisyysaste
        ulkopuoliset_naiset_35_44_lag1=lag(ulkopuoliset_naiset_35_44),
 
        avioituvuus_naiset_25_29_lag1=lag(avioituvuus_naiset_25_29),
-       avioituvuus_naiset_30_34_lag1=lag(avioituvuus_naiset_30_34)
+       avioituvuus_naiset_30_34_lag1=lag(avioituvuus_naiset_30_34),
+       alypuhelin=phones2$alypuhelin[1:42],
+       some_25_34=phones2$some_25_34[1:42],
+       some_35_44=phones2$some_35_44[1:42],
+       alypuhelin_lag1=lag(alypuhelin,1),
+       some_25_34_lag1=lag(some_25_34,1),
+       some_35_44_lag1=lag(some_35_44,1),
+       syntyneita_tk=phones2$tk_syntyneet[1:42]
       )
-syntyvyysaineisto_redusoitu<-syntyvyysaineisto_redusoitu[2:28,]
-syntyvyysaineisto_redusoitu$alypuhelin<-phones2$alypuhelin[1:27]
-syntyvyysaineisto_redusoitu$some_25_34<-phones2$some_25_34[1:27]
-syntyvyysaineisto_redusoitu$some_35_44<-phones2$some_35_44[1:27]
-syntyvyysaineisto_ennuste$alypuhelin<-phones2$alypuhelin[1:42]
-syntyvyysaineisto_ennuste$some_25_34<-phones2$some_25_34[1:42]
-syntyvyysaineisto_ennuste$some_35_44<-phones2$some_35_44[1:42]
-#syntyvyysaineisto_ennuste<-syntyvyysaineisto_ennuste[2:42,]
+syntyvyysaineisto_redusoitu<-syntyvyysaineisto_redusoitu[2:29,]
+t0<-rep(1.45,42)
+t0[1:29]<-NaN
+t0[30]<-1.43
+syntyvyysaineisto_ennuste$tfr_tk<-t0
+#syntyvyysaineisto_ennuste$alypuhelin<-phones2$alypuhelin[1:42]
+#syntyvyysaineisto_ennuste$some_25_34<-phones2$some_25_34[1:42]
+#syntyvyysaineisto_ennuste$some_35_44<-phones2$some_35_44[1:42]
+syntyvyysaineisto_ennuste<-syntyvyysaineisto_ennuste[2:42,]
 #syntyvyysaineisto_ennuste<-syntyvyysaineisto_redusoitu
-
+#syntyvyysaineisto_redusoitu<-syntyvyysaineisto_redusoitu[15:28,]
+red<-dim(syntyvyysaineisto_redusoitu)
+redusoitulen<-red[1]
+#syntyvyysaineisto_ennuste<-syntyvyysaineisto_ennuste[15:42,]
+enn<-dim(syntyvyysaineisto_ennuste)-1
+ennustelen<-enn[1]
 ```
 
 # Hedelmällisyysluvun muutoksia selittävä malli
 
-<!--- + tyollisyysaste_miehet_15_24_lag1 + tyollisyysaste_naiset_25_34_lag1 + tyollisyysaste_miehet_35_44_lag1 + tyollisyysaste_naiset_15_24_lag1 + tyollisyysaste_miehet_25_34_lag1 + tyollisyysaste_naiset_35_44_lag1 --->
-
 Synnytysikäisten naisten lukumäärää pystytään lyhyellä aikavälillä ennustamaan melko hyvin, eikä siihen vaikuta juurikaan muut tekijät, kuten vaikkapa työllisyys tai taloudellinen tilanne. Jos sellaiset tekijät vaikuttavat syntyvyyteen, vaikutuksen pitäisi näkyä hedelmällisyysluvussa.
 
-Yritetään sitten selittää hedelmällisyysluvun muutoksia käyttäen faktoreina kokoelmaa erilaisia tekijöitä ikäluokka- ja sukupuolikohtaisia avioituvuuksia ja pienituloisuusosuusasteita (60% mediaanitulosta); synnyttäjien keski-ikää, alle 1-vuotiaiden kuolleisuutta, eläkemenon bkt-osuutta, sekä sisäkaupungissa, ulkokaupungissa ja maaseudulla asuvien osuutta väestöstä.
+Yritetään sitten selittää hedelmällisyysluvun muutoksia käyttäen faktoreina kokoelmaa erilaisia tekijöitä ikäluokka- ja sukupuolikohtaisia avioituvuuksia ja pienituloisuusosuusasteita (60% mediaanitulosta); synnyttäjien keski-ikää, alle 1-vuotiaiden kuolleisuutta, sekä sisäkaupungissa, ulkokaupungissa ja kehyskaupungissa asuvien osuutta väestöstä. Lisäksi mukana on 25-34- ja 35-44 -vuotiaiden somen aktiivikäyttäjien osuus väestöstä.
+
 ```{r}
-syntyvyys_reg = bas.lm(hedelmallisyysluku ~pienituloisuus_18_24 + pienituloisuus_25_34 + lapsikuolleisuus + synnyttajien_keskiika + avioituvuus_naiset_25_29_lag1 + avioituvuus_naiset_30_34_lag1 + elakemeno + kehyskaupunki + sisempikaupunki + ulompikaupunki + maaseudulla , data = syntyvyysaineisto_redusoitu,
+syntyvyys_reg = bas.lm(hedelmallisyysluku ~lapsikuolleisuus + synnyttajien_keskiika + avioituvuus_naiset_25_29_lag1 + avioituvuus_naiset_30_34_lag1  + kehyskaupunki + sisempikaupunki + ulompikaupunki + some_25_34_lag1 + some_35_44_lag1, data = syntyvyysaineisto_redusoitu,
 prior = "ZS-null", modelprior = uniform())
 ```
 
-Tuloksissa parhaana näkyy kolmen faktorin ja vakiotermin malli, jossa faktoreina ovat 25-29-vuotiaiden avioituvuus, sisäkaupungissa ja muualla kaupungissa asuvien osuus. Näillä faktoreilla on mahdollista selittää noin 92 % hedelmällisyysluvun varianssista datassa. Hieman yllättäen synnyttäjien keski-ikä ei näy mallissa merkittävänä tekijänä.
+Tuloksissa parhaana näkyy neljän faktorin ja vakiotermin malli, jossa faktoreina ovat 30-34 -vuotiaiden avioituvuus, sisäkaupungissa ja kehyskaupungissa asuvien osuus, sekä 35-44 -vuotiaiden sosiaalisen median aktiivikäyttäjien osuus. Näillä faktoreilla on mahdollista selittää noin 96 % hedelmällisyysluvun varianssista datassa. 
 
 ```{r, message = FALSE, warning = FALSE, echo=FALSE}
 round(summary(syntyvyys_reg,n.models=3),3)
 ```
 
-Todennäköisyyspainotetut regressiokertoimet ovat
+Regressiokertoimet todennäköisimmässä mallissa ovat
 
 ```{r, message = FALSE, warning = FALSE, echo=FALSE}
-syntyvyys_coef=coef(syntyvyys_reg,estimator="BMA")
+syntyvyys_coef=coef(syntyvyys_reg,estimator="HPM")
 syntyvyys_coef
 ```
 
-Regressiokertoimista näkyy, että avioituvuus lisää syntyvyyttä: yhden prosenttiyksikön nousu avioituvuudessa kytkeytyisi hedelmällisyysluvun kasvuun 1,49:stä 1,55:ään. Avioituvuus on laskenut 1,85 prosenttiyksikköä 30-34-vuotiaissa vuodesta 2008 vuoteen 2016, jolloin mallin mukaan sillä voi selittää 0,103:n verran hedelmällisyysluvun pudotuksesta.
+Hedelmällisyysluku on laskenut 0,38 vuosien 2010 ja 2017 välillä. Regressiokertoimista näkyy, että avioituvuus lisää syntyvyyttä: yhden prosenttiyksikön nousu avioituvuudessa kytkeytyisi hedelmällisyysluvun maltilliseen kasvuun 1,43:stä 1,434:ään. Avioituvuus on laskenut 20,8 prosenttiyksikköä 30-34-vuotiaissa vuodesta 2008 vuoteen 2017, jolloin mallin mukaan sillä voi selittää -0,086:n verran hedelmällisyysluvun pudotuksesta. Muutos avioituvuudessa selittää siis noin 23 prosenttia muutoksesta.
 
-Kaupungistuminen liittyy jälleen regression mukaan hedelmällisyyslukuun: sisäkaupungissa asuvien osuuden kasvu alentaa hedelmällisyyslukua (kerroin -0.119) ja muualla kaupungissa asuvien osuuden kasvu lievästi nostaa hedelmällisyyslukua. Tiedetään, että Suomen suurissa kaupungeissa on alimmat hedelmällisyysluvut, joten tulos on uskottava. 
+Kaupungistuminen liittyy jälleen regression mukaan hedelmällisyyslukuun: sisäkaupungissa asuvien osuuden kasvu alentaa hedelmällisyyslukua (kerroin -0,105). Tiedetään, että Suomen suurissa kaupungeissa on alimmat hedelmällisyysluvut, joten tulos on uskottava. Kehyskaupungissa asuvien osuus taas kasvattaa selvästi syntyvyyttä (kerroin 0,154). Näiden aggregaattivaikutus on -0,106 hedelmällisyyslukuun 2010-2017. Kaupungistuminen selittää siis 28 prosenttia muutoksesta.
+
+Sosiaalisen median aktiivikäyttö kertoimien mukaan syrjäyttää syntyvyyttä. Vuodesta 2012 vuoteen 2017 välillä somen aktiivikäyttäjien osuus on kasvanut 13 prosentista 41:een prosenttiin, ja hedelmällisyysluku on samana aikana laskenut 0,33. Jos regressiokerroin on kohdallaan, selittää somen aktiivikäyttäjien osuuden kasvu -0,14 tästä laskusta, eli noin 42 prosenttia muutoksesta vuosien 2012 ja 2017 välillä.
 
 Aggregaattikertoimet kaikissa mallissa todennäköisyyksillä painotettuna ovat
 
@@ -147,6 +168,8 @@ Aggregaattikertoimet kaikissa mallissa todennäköisyyksillä painotettuna ovat
 syntyvyys_coef=coef(syntyvyys_reg,estimator="BMA")
 syntyvyys_coef
 ```
+
+Näistä näkyy hyvin useimmat mallit sisältävät kehyskaupungin, sisempikaupungin, some_35_44_lag1:n sekä avioituvuus_naiset_30_34_lag1:n tekijöinä. Faktorien painot vastaavat hyvin todennäköisimmän mallin painoja: sosiaalisen median aktiivikäytön kasvuja sisemmän kaupungin väestöosuuden kasvu alentavat syntyvyyttä, avioituvuuden ja kehyskaupungin väestöosuuden kasvut lisäävät syntyvyyttä. 
 
 Tarkastetaan vielä, millaisia residuaaleja jää selittämättä mallilla
 
@@ -158,8 +181,8 @@ Ja lopuksi verrataan mallin sovitetta
 
 ```{r, message = FALSE, warning = FALSE, echo=FALSE}
 fit<-fitted(syntyvyys_reg)
-vuosi<-syntyvyysaineisto_redusoitu$vuosi[1:27]
-hedelmallisyysluku<-syntyvyysaineisto_redusoitu$hedelmallisyysluku[1:27]
+vuosi<-syntyvyysaineisto_redusoitu$vuosi[1:redusoitulen]
+hedelmallisyysluku<-syntyvyysaineisto_redusoitu$hedelmallisyysluku[1:redusoitulen]
 df<-data.frame(vuosi,hedelmallisyysluku,fit)
 ggplot(df,aes(x=vuosi))+geom_line(aes(y=hedelmallisyysluku,colour="green"))+geom_line(aes(y=fit,colour="red")) + scale_color_discrete(name = "Hedelmällisyysluku", labels = c("Aineisto", "Sovite"))
 ```
@@ -168,54 +191,59 @@ Residuaaleista näkee, että malli selittää heikoimmin viimeisimpiä havaintoj
 
 # Ennuste
 
-Pyritään sitten arvioimaan miten hedelmällisyysluku kehittyy, mikäli 10 viime vuoden trendi jatkuisi näiden neljän tekijän osalta. Jatketaan trendiä lineaarisesti avioituvuudelle, kaupungistumiselle ja synnyttäjien keski-iälle. Muut tekijät pidetään vakiona.
+Pyritään sitten arvioimaan miten hedelmällisyysluku kehittyy, mikäli 10 viime vuoden trendi jatkuisi näiden neljän tekijän osalta. Jatketaan trendiä lineaarisesti avioituvuudelle, kaupungistumiselle ja aktiivisten somen käyttäjien osuudelle. Muut tekijät pidetään vakiona.
 
 ```{r, message = FALSE, warning = FALSE, echo=FALSE}
-ennuste <- predict(syntyvyys_reg, syntyvyysaineisto_ennuste,estimator="BMA")
-#resid.bas <- syntyvyysaineisto_ennuste$hedelmallisyysluku - predict.bas$hedelmallisyysluku
-#rmse.bas <- sqrt(mean(resid.bas^2))
-#rmse.bas
+ennuste <- predict(syntyvyys_reg, syntyvyysaineisto_ennuste,estimator="HPM")
 ```
-
 ```{r, message = FALSE, warning = FALSE, echo=FALSE}
 vuosi<-syntyvyysaineisto_ennuste$vuosi
 hedelmallisyysluku<-ennuste$fit
 hluku<-syntyvyysaineisto_ennuste$hedelmallisyysluku
-df<-data.frame(vuosi,hedelmallisyysluku,hluku)
-ggplot(df,aes(x=vuosi))+geom_line(aes(y=hedelmallisyysluku,colour="red"))+geom_line(aes(y=hluku,colour="green"))
+tfr_tk<-syntyvyysaineisto_ennuste$tfr_tk
+df<-data.frame(vuosi,hedelmallisyysluku,hluku,tfr_tk)
+ggplot(df,aes(x=vuosi))+geom_line(aes(y=hedelmallisyysluku,colour="red"))+geom_line(aes(y=tfr_tk,colour="pink"))+geom_line(aes(y=hluku,colour="green"))+scale_color_manual(name="Hedelmällisyysluku",labels=c("Toteuma","TK 2018","Ennuste"),values=c("red","pink","deepskyblue2"))
 ```
 
-Meillä on nyt ennuste hedelmällisyysluvusta, joten käytetään sitä ja väestöennusteen naisten lukumääriä arvioimaan lasten määriä
+Meillä on nyt ennuste hedelmällisyysluvusta, joten käytetään sitä ja väestöennusteen naisten lukumääriä arvioimaan syntyvien lasten määriä
 ```{r, message = FALSE, warning = FALSE, echo=FALSE}
 syntyvyys_base = bas.lm(syntyneita ~ hedelmallisyysluku + naisten_lkm_15_19 + naisten_lkm_20_24 +naisten_lkm_25_29 + naisten_lkm_30_34 +naisten_lkm_35_39 + naisten_lkm_40_45 + naisten_lkm_45_49, 
 data = syntyvyysaineisto_redusoitu, prior = "ZS-null", modelprior = uniform())
+```
+
+```{r, message = FALSE, warning = FALSE, echo=FALSE}
 aineisto<-data.frame(hedelmallisyysluku,naisten_lkm_15_19=syntyvyysaineisto_ennuste$naisten_lkm_15_19,naisten_lkm_20_24=syntyvyysaineisto_ennuste$naisten_lkm_20_24,naisten_lkm_25_29=syntyvyysaineisto_ennuste$naisten_lkm_25_29,naisten_lkm_30_34=syntyvyysaineisto_ennuste$naisten_lkm_30_34,naisten_lkm_35_39=syntyvyysaineisto_ennuste$naisten_lkm_35_39,naisten_lkm_40_45=syntyvyysaineisto_ennuste$naisten_lkm_40_45,naisten_lkm_45_49=syntyvyysaineisto_ennuste$naisten_lkm_45_49)
+
 lkmennuste <- predict(syntyvyys_base, aineisto,estimator="BMA")
 
 vuosi<-syntyvyysaineisto_ennuste$vuosi
 syntyneita<-lkmennuste$fit
+syntyneita_tk<-syntyvyysaineisto_ennuste$syntyneita_tk
 nsynt<-syntyvyysaineisto_ennuste$syntyneita
-df<-data.frame(vuosi,syntyneita,nsynt)
-ggplot(df,aes(x=vuosi))+geom_line(aes(y=syntyneita,colour="red"))+geom_line(aes(y=nsynt,colour="green"))
+df<-data.frame(vuosi,syntyneita,nsynt,syntyneita_tk)
+ggplot(df,aes(x=vuosi))+geom_line(aes(y=syntyneita,colour="red"))+geom_line(aes(y=nsynt,colour="green"))+geom_line(aes(y=syntyneita_tk,colour="pink"))+scale_color_manual(values=c("red","pink","deepskyblue2"),name=c("Syntyneitä"),labels=c("Toteuma","TK 2018","Ennuste"))
 ```
 
 ## Syntyvyyden laskun syyt
 
 Vaikka tällä tutkimuksella ei pääse kiinni syntyvyyden laskun kausaalisiin syihin, näkyy tuloksista selvästi, että syntyvyyden laskua ajaa kaksi erilaista tekijää: hedelmällisyysluvun lasku ja synnytysikäisten naisten lukumäärän lasku. Vaikeampaa on yrittää selittää, mistä hedelmällisyysluvun lasku johtuu. 
 
-Yksi tässäkin tutkimuksessa selvästi esille tullut tekijä hedelmällisyysluvun laskulle on synnyttäneiden keski-iän nousu. Se kertoo selvästi siitä, että 20-24 -vuotiaat naiset saavat lapsia selvästi aiempaa vähemmän, samoin 25-29 -vuotiaat. Tämä saattaa johtua asenne- tai preferenssimuutoksesta, mutta myös sisäkaupungissa asuvien osuuden kasvu kytkeytyi tässä tutkimuksessa synnyttäneiden keski-iän nousuun. 
+Uutena syntyvyyteen vaikuttana tekijänä tässä tutkimuksessa näkyy sosiaalisen median aktiivikäyttäjien osuuden kasvun vaikutus syntyvyyteen. Kausaalista kytkentää tämä tutkimus ei osoita, lähinnä sen että sosiaalinen media ja sen aktiivikäyttö saattaa syrjäyttää syntyvyyttä.
 
+Sisäkaupungissa asuvien osuuden kasvu kytkeytyi tässä tutkimuksessa synnyttäneiden keski-iän nousuun. 
 Tilastokeskuksen tiedoista tiedetään, että kaupungeissa syntyvyys on alempaa kuin muussa maassa: "Vastaavasti matalin syntyvyys oli jaksolla 2013–2017 Helsingissä, jossa kokonaishedelmällisyysluku oli 1,27. Turussa luku oli 1,29 ja Tampereella 1,34. Myös kaikkien kuntien vertailussa viimeksi mainittujen kaupunkien syntyvyys oli matalimpien joukossa." (Tilastokeskus, väestörakenne 2018). 
 
 Regressiokerrointen mukaan sisemmässä kaupungissa asuvien osuuden kasvu alentaa syntyvyyttä ja lykkää lasten hankintaa. Toisaalta ulommassa kaupungissa (samoin kuin maaseudulla) asuvien osuuden kasvu näyttäisi lisäävän syntyvyyttä ja vähentävän lastenhankinnan lykkäämistä. Tulokset ovat intuition mukaisia, koska sisemmissä kaupungeissa erityisesti lapsiperheille sopivien asuntojen hintataso on korkea, kun taas kauempana kaupunkien keskustoista hintataso on alempi. Kaupungistuminen ei siis välttämättä alenna syntyvyyttä, vaikka sisäkaupungeissa asuvien osuuden kasvu näyttää alentavan syntyvyyttä.
 
 Suurin osa lapsiperheistä on edelleen avioperheitä. Avioituvuus erityisesti 30-34-vuotiailla kytkeytyy selvästi syntyneiden lasten määrään. Ainakin aiemmin on argumentoitu, että verrattuna avoliittoihin, avioliitoissa syntyy enemmän lapsia. Kyse voi olla myös valinnasta, mutta osaltaan avioituvuuden aleneminen kertoo asenne- tai preferenssimuutoksesta.
 
-Tässä tutkimuksessa aineisto koostui pienestä määrästä havaintoja. Tästä syystä tuloksiin on syytä suhtautua varovaisuudella, vaikka usealle löydetylle tekijälle on selkeä selitys. Pyrittäessä soveltamaan faktorimallia eteenpäin, näkyy selvästi että hedelmällisyysluku laskee jyrkemmin kuin malli ennakoi. Tässä tutkimuksessa ei päästy kiinni eron syihin, joten joko faktoreita puuttuu mallista tai faktoripainot ovat siinä vääriä. Joka tapauksessa näyttää, että syntyvyyteen vaikuttavat tekijät ovat muita kuin aiemmin.
+Tässä tutkimuksessa aineisto koostui pienestä määrästä havaintoja. Tästä syystä tuloksiin on syytä suhtautua varovaisuudella, vaikka usealle löydetylle tekijälle on selkeä selitys. Sovellettaessa faktorimallia eteenpäin, näkyy selvästi että hedelmällisyysluku jatkaa jyrkkää laskuaan. Faktorimallin tulokset ovat melko herkkiä sille, mitä selittäviä muuttujia valitaan mukaan, erityisesti eri muuttujien keskinäiset painoarvot muuttuvat helposti.
+
+Verrattuna Tilastokeskuksen väestöennusteeseen 2018 ovat tämän mallin ennusteet selvästi synkempiä syntyvyyden osalta. 
 
 ## Johtopäätökset
 
-Ennustemalli arvioi aivan oikein syntyvyyskehityksen alenevan, mutta alenemisnopeus on toteutuneeseen verrattuna liian pieni. Tämä kertoo joko faktoripainojen muuttuneen viime vuosina, tai todennäköisemmin siitä että mukaan on tullut muutosnopeuteen vaikuttavia tekijöitä, joita ei tässä tutkimuksessa ole huomioitu.
+Ennustemallilla saatu tulos vastaa havaittua alenevaa syntyvyyskehitystä. Jos eri syntyvyyteen vaikuttavien tekijöiden kehitys jatkuu nykyisenkaltaisena, voi kokonaishedelmällisyysluvun ja syntyvyyden arvioida jatkavan alenevaa trendiään kohti kokonaishedelmällisyyslukua 1,1 vuoteen 2030 mennessä.
 
 # Viittaukset
 Becker, G.S., Barro, R.J., Reformulation of the economic theory of fertility, The quarterly journal of economics, 1988 
@@ -252,16 +280,6 @@ lasten määrää, jonka nainen synnyttää kyseisen vuoden hedelmällisyyden
 pysyessä voimassa naisen koko hedelmällisen kauden edellyttäen, ettei hän 
 kuole ennen tämän kauden päättymistä." Lähde: Tilastokeskus, Väestörakenne-tilasto
 
-*pienituloisuus_0_17, pienituloisuus_18_24, pienituloisuus_25_34, pienituloisuus_35_49, pienituloisuus_50_64*
-"Pienituloisuusaste: Pienituloisten osuus kyseisessä väestöryhmässä. 
-Pienituloisia henkilöitä: Pienituloisia henkilöitä kyseisessä väestöryhmässä. 
-Pienituloisten mediaanitulo: Pienituloisten ekvivalentit mediaanitulot kyseisessä väestöryhmässä. 
-Köyhyysvaje: Pienituloisten tulomediaanin ja koko väestön pienituloisuusrajan erotus prosentteina rajasta.
- Ekvivalenttitulo: Kotitalouden käytettävissä olevat rahatulot kulutusyksikköä kohden vuodessa. 
-Kulutusyksikkö: Modifioitu OECD-asteikko (1.0 - 0.5 - 0.3).
-Pienituloisuusrajat lasketaan vuosittain kaikkien kotitalouksien ekvivalenttitulon mediaanin perusteella.
-Julkaisuissa käytetty virallinen pienituloisuusraja on 60 % mediaanitulosta ja tulokäsite käytettävissä olevat rahatulot.Euromääräiset tiedot on esitetty vuoden 2016 rahassa." Lähde: Tilastokeskus, Tulonjakotilasto
-
 *lapsikuolleisuus*
 Alle 1-vuotiaana kuolleiden osuus elävänä syntyneistä. Lähde: Human mortality database
 
@@ -274,17 +292,12 @@ Laskettu synnyttäneiden äitien ikien keskiarvona. Lähde: Tilastokeskus
 *avioituvuus_naiset_25_29, avioituvuus_naiset_30_34*
 Naisten solmittujen avioliittojen lukumäärä suhteessa samanikäisten naisten lukumäärään. Lähde: Tilastokeskus
 
-*elakemeno*
-Kokonaiseläkemeno Suomessa prosentteina BKT:stä
-Lähde: Eläketurvakeskus
-
-*kaupungissaasuvat, maaseudulla, sisakaupungissa*
-Kaupungeissaasuvien osuus väestöstä, maaseudulla asuvien osuus väestöstä ja 
-Lähde: Tilastokeskus
-
-*jatkuvakokoaika_miehet, jatkuvaosaaika_miehet, maaraaikakoko_miehet, maaraaikaosa_miehet, jatkuvakokoaika_naiset, jatkuvaosaaika_naiset, maaraaikakoko_naiset, maaraaikaosa_naiset*
-Lähde:
-Tilastokeskus, työvoimatutkimus
+*sisempikaupunki, ulompikaupunki, kehykaupunki*
+Sisempi kaupunkialue on kaupunkien tiivis yhtenäinen tehokkaasti rakennettu alue. Ulompi kaupunkialue
+on sisemmän kaupunkialueen reunasta yhtenäisesti jatkuvan taajamarakenteen reunalle ulottuva
+kaupunkimaisen tehokkuuden alue. Kaupungin kehysalue on 
+kaupunkiin välittömästi kytkeytyvä osa kaupungin ja maaseudun välivyöhykkeestä.
+Lähde: Ympäristöministeriö
 
 *naisten_lkm_15_19, naisten_lkm_20_24, naisten_lkm_25_29, naisten_lkm_30_34,naisten_lkm_35_39,  naisten_lkm_40_45, naisten_lkm_45_49*
 Synnytysikäiset naiset 5-vuotisikäluokittain
@@ -295,12 +308,5 @@ Tilastokeskus
 Yhden vuoden viivästetty 10-vuotisikäluokittainen työttömyysaste miehille ja naisille
 Lähde: Tilastokeskus
 
-# Liite: Kaupunkialueet
-
-**Sisempi kaupunkialue**
-Sisempi kaupunkialue kuvaa kaupunkien tiivistä ja yhtenäistä tehokkaasti rakennettua aluetta. Sisemmällä kaupunkialueella lähiympäristön vallitseva aluetehokkuus on vähintään 0,1, joka vastaa tiivistä pientaloaluetta. Sisemmästä kaupunkialueesta irrallaan sijaitsevat korkean aluetehokkuuden alueet sisällytetään ulompaan kaupunkialueeseen. Jokaisella keskustaajamalla voi olla vain yksi sisempi kaupunkialue. Poikkeuksen tästä muodostavat Helsingin kaupunkiseudulla sijaitsevat kaupungit Järvenpää ja Kerava, joille muodostetaan oma sisempi kaupunkialue.
-Lähde: Ympäristöministeriö
-
-**Ulompi kaupunkialue**
-Ulompi kaupunkialue koostuu erillisistä lähiöistä, kaupan, teollisuuden ja toimistojen reunakaupungista sekä toisaalta kaupungin viheralueista ja alemman tehokkuuden asuinalueista, jotka kuitenkin ovat selvästi osa yhtenäistä kaupunkialuetta. Ulommalla kaupunkialueella kolmasosa lähiympäristöstä on vähintään 0,02 aluetehokkuuden aluetta. Tällä kriteerillä ulomman kaupunkialueen ulkoraja estimoi asemakaavoitetun alueen ulkorajaa ja näin suunnitellusti rakennettua yhtenäistä kaupunkialuetta.
-Lähde: Ympäristöministeriö
+*some_25_34, some_35_44*
+"Seuraa jotain yhteisöpalvelua yleensä jatkuvasti kirjautuneena tai useasti päivässä". Tilastokeskuksen Viestintä- ja tietotekniikan käyttö-tutkimuksesta 10-vuotisikäluokat
