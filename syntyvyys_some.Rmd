@@ -309,4 +309,4 @@ Yhden vuoden viivästetty 10-vuotisikäluokittainen työttömyysaste miehille ja
 Lähde: Tilastokeskus
 
 *some_25_34, some_35_44*
-"Seuraa jotain yhteisöpalvelua yleensä jatkuvasti kirjautuneena tai useasti päivässä". Tilastokeskuksen Viestintä- ja tietotekniikan käyttö-tutkimuksesta 10-vuotisikäluokat
+"Seuraa jotain yhteisöpalvelua yleensä jatkuvasti kirjautuneena tai useasti päivässä". Tilastokeskuksen Viestintä- ja tietotekniikan käyttö-tutkimuksesta 10-vuotisikäluokat. Aineisto 2012-2017. Tilastoa jatkettu taaksepäin suhteuttamalla 2012 tieto Internetin käyttäjien lukumäärän muutoksella (Pew Research Center http://www.pewinternet.org/2015/10/08/social-networking-usage-2005-2015/)
