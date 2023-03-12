@@ -465,7 +465,7 @@ ggplot(df,aes(x=vuosi))+geom_line(aes(y=syntyneita,colour="red"))+geom_line(aes(
 ```
 
 ```{r, message = FALSE, warning = FALSE, echo=FALSE}
-plot_data<-function(df,vuosi,a2018,b2023,selite,f1,f2) {
+plot_data<-function(df,vuosi,a2018,b2023,selite,xlabel,f1,f2) {
   a2018_data<-rep(NA,41)
   a2018_data[1:29]=a2018[1:29]
   a2018_ennuste<-rep(NA,41)
@@ -478,7 +478,8 @@ plot_data<-function(df,vuosi,a2018,b2023,selite,f1,f2) {
   y1=a2018[34]*f1
   x2=x1
   y2=b2023[34]*f2
-  ggplot(df,aes(x=vuosi)) +geom_line(aes(y=b2023_data),colour="pink")+ geom_line(aes(y=b2023_ennuste),colour="pink",linetype='dashed')+ geom_line(aes(y=a2018_data),colour="red")+ geom_line(aes(y=a2018_ennuste),colour="red",linetype='dashed')+ theme_minimal()+ylab(selite)+ geom_text(x=x1,y=y1,label='2018')+ geom_text(x=x2,y=y2,label='2023')
+  ggplot(df,aes(x=vuosi)) +geom_line(aes(y=b2023_data),colour="pink")+ geom_line(aes(y=b2023_ennuste),colour="pink",linetype='dashed')+ geom_line(aes(y=a2018_data),colour="red")+ geom_line(aes(y=a2018_ennuste),colour="red",linetype='dashed')+ theme_minimal()+ylab(selite)+ geom_text(x=x1,y=y1,label='2018')+ geom_text(x=x2,y=y2,label='2023')+
+  xlab(xlabel)
 }
 
 some_NEW=syntyvyysaineisto_2023$some_35_44
@@ -492,10 +493,14 @@ kehyskaupunki_NEW=syntyvyysaineisto_2023$kehyskaupunki
 avioituvuus_naiset_30_34_OLD=syntyvyysaineisto_ennuste$avioituvuus_naiset_30_34
 avioituvuus_naiset_30_34_NEW=syntyvyysaineisto_2023$avioituvuus_naiset_30_34
 df<-data.frame(syntyvyysaineisto_ennuste$vuosi,some_OLD,some_NEW,sisempikaupunki_OLD,sisempikaupunki_NEW,kehyskaupunki_OLD,kehyskaupunki_NEW)
-plot_data(df,vuosi,some_OLD,some_NEW,'Sosiaalista mediaa päivittäin käyttävien osuus (%)',0.9,0.9)
-plot_data(df,vuosi,sisempikaupunki_OLD,sisempikaupunki_NEW,'sisäkaupungissa asuvien osuus (%)',0.98,1.02)
-plot_data(df,vuosi,kehyskaupunki_OLD,kehyskaupunki_NEW,'kehyskaupungissa asuvien osuus (%)',1.01,0.99)
-plot_data(df,vuosi,avioituvuus_naiset_30_34_OLD,avioituvuus_naiset_30_34_NEW,'avioituvuus',1.1,0.9)
+plot_data(df,vuosi,some_OLD,some_NEW,'Sosiaalista mediaa päivittäin käyttävien osuus (%)','Vuosi',0.9,0.9)
+plot_data(df,vuosi,sisempikaupunki_OLD,sisempikaupunki_NEW,'sisäkaupungissa asuvien osuus (%)','Vuosi',0.98,1.02)
+plot_data(df,vuosi,kehyskaupunki_OLD,kehyskaupunki_NEW,'kehyskaupungissa asuvien osuus (%)','Vuosi',1.01,0.99)
+plot_data(df,vuosi,avioituvuus_naiset_30_34_OLD,avioituvuus_naiset_30_34_NEW,'avioituvuus','Vuosi',1.1,0.9)
+plot_data(df,vuosi,some_OLD,some_NEW,'Ratio of daily users of social media (%)','Year',0.9,0.9)
+plot_data(df,vuosi,sisempikaupunki_OLD,sisempikaupunki_NEW,'Ratio of persons living in the inner city (%)','Year',0.98,1.02)
+plot_data(df,vuosi,kehyskaupunki_OLD,kehyskaupunki_NEW,'Ratio of persons living in the outer city (%)','Year',1.01,0.99)
+plot_data(df,vuosi,avioituvuus_naiset_30_34_OLD,avioituvuus_naiset_30_34_NEW,'Marriage rate for 30-30 year old women','Year',1.1,0.9)
 ```
 
 ## Syntyvyyden laskun syyt

@@ -354,7 +354,12 @@ alkuperainen[1:29]<-NA
 labels=c(hedelmallisyysluku_toteutunut="Havainto -2022",tfr_tk="Tilastokeskus",hedelmallisyysluku_sovite='Sovite',hedelmallisyysluku_ennuste='Ennuste',tfr_lin='lin-approx')
 ggplot(df,aes(x=vuosi))+geom_line(aes(y=tfr_tk),color="black",linetype = "dotted")+geom_line(aes(y=hluku),color='black')+geom_line(aes(y=hedelmallisyysluku_sovite),color="deepskyblue2")+geom_line(aes(y=hedelmallisyysluku_ennuste),color="navyblue",linetype = "dashed")+geom_line(aes(y=tfr_lin),linetype = "dotdash")+scale_color_manual(name="Hedelmällisyysluku",labels=labels)+ theme_minimal() + ylab("Hedelmällisyysluku") + geom_text(x=2000, y=1.8, label="Havainto")+ geom_text(x=2025, y=1.5, label="Väestöennuste")+ geom_text(x=2000, y=1.65, label="Sovite", color='deepskyblue2')+ geom_text(x=2025, y=1.1, label="Ennuste 2023", color='navyblue')
 
+
+ggplot(df,aes(x=vuosi))+geom_line(aes(y=tfr_tk),color="black",linetype = "dotted")+geom_line(aes(y=hluku),color='black')+geom_line(aes(y=hedelmallisyysluku_sovite),color="deepskyblue2")+geom_line(aes(y=hedelmallisyysluku_ennuste),color="navyblue",linetype = "dashed")+geom_line(aes(y=tfr_lin),linetype = "dotdash")+ theme_minimal() + ylab("Total fertility rate") + xlab("Year") +geom_text(x=2000, y=1.8, label="Observation")+ geom_text(x=2025, y=1.5, label="Statistics Finland")+ geom_text(x=2000, y=1.65, label="Fit", color='deepskyblue2')+ geom_text(x=2025, y=1.1, label="Forecast 2023", color='navyblue')
+
 ggplot(df,aes(x=vuosi))+geom_line(aes(y=hluku),color='black')+geom_line(aes(y=hedelmallisyysluku_ennuste),color="navyblue",linetype = "dashed") +geom_line(aes(y=alkuperainen),color="darkgreen",linetype = "dotdash") +scale_color_manual(name="Hedelmällisyysluku",labels=labels)+ theme_minimal() + ylab("Hedelmällisyysluku") + geom_text(x=2000, y=1.8, label="Havainto")+ geom_text(x=2025, y=1.1, label="Ennuste 2023", color='navyblue')+ geom_text(x=2027, y=1.3, label="Ennuste 2018", color='darkgreen')
+
+ggplot(df,aes(x=vuosi))+geom_line(aes(y=hluku),color='black')+geom_line(aes(y=hedelmallisyysluku_ennuste),color="navyblue",linetype = "dashed") +geom_line(aes(y=alkuperainen),color="darkgreen",linetype = "dotdash")+ xlab("Year")+ theme_minimal() + ylab("Total fertility rate") + geom_text(x=2000, y=1.8, label="Observation")+ geom_text(x=2025, y=1.1, label="Forecast 2023", color='navyblue')+ geom_text(x=2027, y=1.3, label="Forecast 2018", color='darkgreen')
 
 #print(vuosi[41])
 #print(hedelmallisyysluku_ennuste[41])
@@ -412,7 +417,10 @@ df<-data.frame(vuosi,syntyneita,nsynt,syntyneita_tk,syntyneita_hav)
 print(df)
 #ggplot(df,aes(x=vuosi))+geom_line(aes(y=syntyneita,colour="red"))+geom_line(aes(y=syntyneita_ennuste,colour="green"))+geom_line(aes(y=nsynt,colour="green"))+geom_line(aes(y=syntyneita_tk,colour="pink"))+geom_point(aes(y=syntyneita_hav,colour="black"))+scale_color_manual(values=c("red","pink","deepskyblue2",'black'),name=c("Syntyneitä"),labels=c("Toteuma","TK 2018","Ennuste",'Out of sample'))+ theme_minimal()
 
-ggplot(df,aes(x=vuosi))+geom_line(aes(y=syntyneita_tk),color="black",linetype = "dotted")+geom_line(aes(y=nsynt),color='black')+geom_line(aes(y=syntyneita_sovite),color="deepskyblue2")+geom_line(aes(y=syntyneita_ennuste),color="navyblue",linetype = "dashed")+theme_minimal() + ylab("Syntyneitä")+ geom_text(x=2002, y=60000, label="Havainto")+ geom_text(x=2025, y=37000, label="Ennuste", color='darkgreen')+ geom_text(x=2025, y=51000, label="Väestöennuste")+ geom_text(x=2002, y=53000, label="Sovite", color='deepskyblue2')
+ggplot(df,aes(x=vuosi))+geom_line(aes(y=syntyneita_tk),color="black",linetype = "dotted")+geom_line(aes(y=nsynt),color='black')+geom_line(aes(y=syntyneita_sovite),color="deepskyblue2")+geom_line(aes(y=syntyneita_ennuste),color="navyblue",linetype = "dashed")+theme_minimal() + ylab("Syntyneitä")+ geom_text(x=2002, y=60000, label="Havainto")+ geom_text(x=2025, y=37000, label="Ennuste", color='navyblue')+ geom_text(x=2025, y=51000, label="Väestöennuste")+ geom_text(x=2002, y=53000, label="Sovite", color='deepskyblue2')
+
+
+ggplot(df,aes(x=vuosi))+geom_line(aes(y=syntyneita_tk),color="black",linetype = "dotted")+geom_line(aes(y=nsynt),color='black')+geom_line(aes(y=syntyneita_sovite),color="deepskyblue2")+geom_line(aes(y=syntyneita_ennuste),color="navyblue",linetype = "dashed")+theme_minimal() + ylab("The number of newborns")+ geom_text(x=2002, y=60000, label="Observation")+ geom_text(x=2025, y=37000, label="Forecast", color='navyblue')+ geom_text(x=2025, y=51000, label="Statistics Finland")+ geom_text(x=2002, y=53000, label="Fit", color='deepskyblue2')+ xlab("Year")
 
 ```
 
