@@ -22,45 +22,15 @@ source("dualplot.R")
 ```
 
 ```{r load-data, message = FALSE, echo=FALSE}
-load("syntyvyysaineisto_redusoitu.Rdata")
-load("syntyvyysaineisto_ennuste.Rdata")
-load("phones2.Rdata")
-load("data/phones_2023.Rdata")
-load("data/aineisto_rev2023_v3.RData")
+#load("syntyvyysaineisto_redusoitu.Rdata")
+#load("syntyvyysaineisto_ennuste.Rdata")
+#load("phones2.Rdata")
+#load("data/phones_2023.Rdata")
+#load("data/aineisto_rev2023_v3.RData")
+load("data/predictions_backtesting_2023.RData")
 ```
 
 ------------------------------------------------------------------------
-
-## Johdanto
-
-Syntyneiden lasten määrä on Suomessa laskenut 61 000 lapsesta vuonna
-2010 noin 50 300:ään vuonna 2017. Alkuvuoden 2018 luvuilla laskemalla
-vaikuttaa siltä että tämän vuoden syntyneden määrä jää ehkä 48 000:een
-ja hedelmällisyysluku 1,43:een alle vuoden 1973 pohjien. Laskeva trendi
-on jatkunut koko aikavälin 2010-2018, joten satunnaisvaihtelusta tuskin
-on kysymys. Osan syntyneiden lukumäärän laskusta selittää
-synnytysikäisten naisten lukumäärän pieneneminen, mutta ei läheskään
-kaikkea. Muiksi selityksiksi on tarjottu mm. työttömyyttä (Hiilamo,
-2017) ja miesten heikkoa työsuhteeseen kiinnittymistä (Miettinen ja
-Jalovaara, 2015). Muissa maissa syntyvyyden laskun on arvioitu
-aiheutuvan mm. lapsikuolleisuuden vähenemisestä (Becker ja Barro, 1988),
-kaupungistumisesta (Martine et al., 2013) ja vanhuuseläkkeiden
-korkeammasta korvausasteesta (Boldrin et al., 2015). Sen lisäksi että
-työttömyys alentaisi syntyvyyttä, taloudellisten kriisien on myös
-havaittu lisänneen syntyvyyttä (Kohler ja Kohler, 2002).
-
-Syntyneiden määrällä on viiveellä vaikutusta työikäisen väestön määrään,
-ja sitä kautta syntyvyyden laskulla on vaikutuksia mm. sosiaaliturvan
-rahoituksen kestävyyteen. Eläketurvakeskuksen laskelmien mukaan
-syntyvyyden lasku aiheuttaa työeläkemaksussa pitkällä aikavälillä
-useiden prosenttiyksiköiden nousupaineen (Tikanmäki, 2017). Myös
-Väestöntutkimuslaitos on analysoinut syitä syntyvyyden laskulle, mutta
-selkeätä syytä ei ole löytynyt (Rotkirch et al, 2017)
-
-Tässä tutkimuksessa jatketaan aiemman harjoituksen mallilla ja
-kokeillaan miten hyvin ennuste toimii. Tämän lisäksi tutkimuksessa
-pyritään tarkastelemaan, onko sosiaalisen median aktiivikäytön
-lisääntymisellä kytkentää syntyvyyden laskuun.
 
 ## Aineisto
 
@@ -170,7 +140,7 @@ syntyvyysaineisto_ennuste <- syntyvyysaineisto_ennuste %>% mutate(tyollisyysaste
 syntyvyysaineisto_redusoitu<-syntyvyysaineisto_redusoitu[2:29,]
 
 syntyvyysaineisto_2023 <- aineisto_rev2023_v3 %>% mutate(
-yollisyysaste_naiset_15_24_lag1=lag(tyollisyysaste_naiset_15_24,1),
+tyollisyysaste_naiset_15_24_lag1=lag(tyollisyysaste_naiset_15_24,1),
        tyollisyysaste_naiset_25_34_lag1=lag(tyollisyysaste_naiset_25_34,1),
        tyollisyysaste_naiset_35_44_lag1=lag(tyollisyysaste_naiset_35_44,1),
        tyollisyysaste_miehet_15_24_lag1=lag(tyollisyysaste_miehet_15_24,1),
@@ -226,170 +196,89 @@ redusoitulen<-red[1]
 #syntyvyysaineisto_ennuste<-syntyvyysaineisto_ennuste[15:42,]
 enn<-dim(syntyvyysaineisto_ennuste)-1
 ennustelen<-enn[1]
-```
 
-# Hedelmällisyysluvun muutoksia selittävä malli
+dummy2021<-rep(0,46)
+dummy2021[33]<-1
 
-Synnytysikäisten naisten lukumäärää pystytään lyhyellä aikavälillä
-ennustamaan melko hyvin, eikä siihen vaikuta juurikaan muut tekijät,
-kuten vaikkapa työllisyys tai taloudellinen tilanne. Jos jokin vaikuttaa
-syntyvyyteen, vaikutuksen pitäisi näkyä hedelmällisyysluvussa.
+lag_df<-function(df,n) df <- df %>% mutate(
+       avioituvuus_naiset_25_29_lag1=lag(avioituvuus_25_29),
+       avioituvuus_naiset_30_34_lag1=lag(avioituvuus_30_34),
+       #alypuhelin=phones2$alypuhelin[1:n],
+       #some_25_34=phones2$some_25_34[1:n],
+       #some_35_44=phones2$some_35_44[1:n],
+       alypuhelin_lag1=lag(alypuhelin,1),
+       some_25_34_lag1=lag(some_25_34,1),
+       some_35_44_lag1=lag(some_35_44,1),
+       dummy2021=dummy2021
+      )
 
-Yritetään sitten selittää hedelmällisyysluvun muutoksia käyttäen
-faktoreina kokoelmaa erilaisia tekijöitä ikäluokka- ja
-sukupuolikohtaisia avioituvuuksia ja pienituloisuusosuusasteita (60%
-mediaanitulosta); synnyttäjien keski-ikää, alle 1-vuotiaiden
-kuolleisuutta, sekä sisäkaupungissa, ulkokaupungissa ja kehyskaupungissa
-asuvien osuutta väestöstä. Lisäksi mukana on 25-34- ja 35-44 -vuotiaiden
-somen aktiivikäyttäjien osuus väestöstä.
+syntyvyysaineisto_redusoitu_2022<-lag_df(predictions_backtesting_2022,35)
+syntyvyysaineisto_redusoitu_2021<-lag_df(predictions_backtesting_2021,34)
+syntyvyysaineisto_redusoitu_2020<-lag_df(predictions_backtesting_2020,33)
+syntyvyysaineisto_redusoitu_2019<-lag_df(predictions_backtesting_2019,32)
+syntyvyysaineisto_redusoitu_2018<-lag_df(predictions_backtesting_2018,31)
+syntyvyysaineisto_redusoitu_2017<-lag_df(predictions_backtesting_2017,30)
+syntyvyysaineisto_ennuste_2022<-lag_df(predictions_backtesting_2022,42)
+syntyvyysaineisto_ennuste_2021<-lag_df(predictions_backtesting_2021,42)
+syntyvyysaineisto_ennuste_2020<-lag_df(predictions_backtesting_2020,42)
+syntyvyysaineisto_ennuste_2019<-lag_df(predictions_backtesting_2019,42)
+syntyvyysaineisto_ennuste_2018<-lag_df(predictions_backtesting_2018,42)
+syntyvyysaineisto_ennuste_2017<-lag_df(predictions_backtesting_2017,42)
 
-```{r, message = FALSE, warning = FALSE, echo=FALSE}
-syntyvyys_reg = bas.lm(hedelmallisyysluku ~lapsikuolleisuus + synnyttajien_keskiika + avioituvuus_naiset_25_29_lag1 + avioituvuus_naiset_30_34_lag1  + kehyskaupunki + sisempikaupunki + ulompikaupunki + some_25_34_lag1 + some_35_44_lag1, data = syntyvyysaineisto_redusoitu, prior = "ZS-null", modelprior = uniform())
-```
+hed<-rep(1.45,46)
+hed[1:46]<-NaN
+hed[1:42]<-syntyvyysaineisto_CHECK2023$hedelmallisyysluku
 
-Tuloksissa parhaana näkyy neljän faktorin ja vakiotermin malli, jossa
-faktoreina ovat 30-34 -vuotiaiden avioituvuus, sisäkaupungissa ja
-kehyskaupungissa asuvien osuus, sekä 35-44 -vuotiaiden sosiaalisen
-median aktiivikäyttäjien osuus. Näillä faktoreilla on mahdollista
-selittää noin 96 % hedelmällisyysluvun varianssista datassa.
+t0<-rep(1.45,46)
+t0[1:29]<-NaN
+t0[30]<-1.43
+syntyvyysaineisto_ennuste_2022$tfr_tk<-t0
+syntyvyysaineisto_ennuste_2021$tfr_tk<-t0
+syntyvyysaineisto_ennuste_2020$tfr_tk<-t0
+syntyvyysaineisto_ennuste_2019$tfr_tk<-t0
+syntyvyysaineisto_ennuste_2018$tfr_tk<-t0
+syntyvyysaineisto_ennuste_2017$tfr_tk<-t0
 
-```{r, message = FALSE, warning = FALSE, echo=FALSE}
-round(summary(syntyvyys_reg,n.models=3),3)
-```
+syntyvyysaineisto_ennuste_2022$hedelmallisyysluku<-hed
+syntyvyysaineisto_ennuste_2021$hedelmallisyysluku<-hed
+syntyvyysaineisto_ennuste_2020$hedelmallisyysluku<-hed
+syntyvyysaineisto_ennuste_2019$hedelmallisyysluku<-hed
+syntyvyysaineisto_ennuste_2018$hedelmallisyysluku<-hed
+syntyvyysaineisto_ennuste_2017$hedelmallisyysluku<-hed
 
-Regressiokertoimet todennäköisimmässä mallissa ovat
 
-```{r, message = FALSE, warning = FALSE, echo=FALSE}
-syntyvyys_coef=coef(syntyvyys_reg,estimator="HPM")
-syntyvyys_coef
-```
+syntyvyysaineisto_redusoitu_2022<-syntyvyysaineisto_redusoitu_2022[2:34,]
+syntyvyysaineisto_redusoitu_2021<-syntyvyysaineisto_redusoitu_2021[2:33,]
+syntyvyysaineisto_redusoitu_2020<-syntyvyysaineisto_redusoitu_2020[2:32,]
+syntyvyysaineisto_redusoitu_2019<-syntyvyysaineisto_redusoitu_2019[2:31,]
+syntyvyysaineisto_redusoitu_2018<-syntyvyysaineisto_redusoitu_2018[2:30,]
+syntyvyysaineisto_redusoitu_2017<-syntyvyysaineisto_redusoitu_2017[2:29,]
 
-Hedelmällisyysluku on laskenut 0,38 vuosien 2010 ja 2017 välillä.
-Regressiokertoimista näkyy, että avioituvuus lisää syntyvyyttä: yhden
-prosenttiyksikön nousu avioituvuudessa kytkeytyisi hedelmällisyysluvun
-maltilliseen kasvuun 1,43:stä 1,434:ään. Avioituvuus on laskenut 20,8
-prosenttiyksikköä 30-34-vuotiaissa vuodesta 2008 vuoteen 2017, jolloin
-mallin mukaan sillä voi selittää -0,086:n verran hedelmällisyysluvun
-pudotuksesta. Muutos avioituvuudessa selittää siis noin 23 prosenttia
-muutoksesta.
+syntyvyysaineisto_redusoitu_2022$hedelmallisyysluku<-hed[2:34]
+syntyvyysaineisto_redusoitu_2021$hedelmallisyysluku<-hed[2:33]
+syntyvyysaineisto_redusoitu_2020$hedelmallisyysluku<-hed[2:32]
+syntyvyysaineisto_redusoitu_2019$hedelmallisyysluku<-hed[2:31]
+syntyvyysaineisto_redusoitu_2018$hedelmallisyysluku<-hed[2:30]
+syntyvyysaineisto_redusoitu_2017$hedelmallisyysluku<-hed[2:29]
 
-Kaupungistuminen liittyy jälleen regression mukaan hedelmällisyyslukuun:
-sisäkaupungissa asuvien osuuden kasvu alentaa hedelmällisyyslukua
-(kerroin -0,105). Tiedetään, että Suomen suurissa kaupungeissa on
-alimmat hedelmällisyysluvut, joten tulos on uskottava. Kehyskaupungissa
-asuvien osuus taas kasvattaa selvästi syntyvyyttä (kerroin 0,154).
-Näiden aggregaattivaikutus on -0,106 hedelmällisyyslukuun 2010-2017.
-Kaupungistuminen selittää siis 28 prosenttia muutoksesta.
+t0[31:42]<-1.45
+syntyvyysaineisto_ennuste_2022<-syntyvyysaineisto_ennuste_2022[2:42,]
+syntyvyysaineisto_ennuste_2020<-syntyvyysaineisto_ennuste_2020[2:42,]
+syntyvyysaineisto_ennuste_2021<-syntyvyysaineisto_ennuste_2021[2:42,]
+syntyvyysaineisto_ennuste_2019<-syntyvyysaineisto_ennuste_2019[2:42,]
+syntyvyysaineisto_ennuste_2018<-syntyvyysaineisto_ennuste_2018[2:42,]
+syntyvyysaineisto_ennuste_2017<-syntyvyysaineisto_ennuste_2017[2:42,]
 
-Sosiaalisen median aktiivikäyttö kertoimien mukaan syrjäyttää
-syntyvyyttä. Vuodesta 2012 vuoteen 2017 välillä somen aktiivikäyttäjien
-osuus on kasvanut 13 prosentista 41:een prosenttiin, ja
-hedelmällisyysluku on samana aikana laskenut 0,33. Jos regressiokerroin
-on kohdallaan, selittää somen aktiivikäyttäjien osuuden kasvu -0,14
-tästä laskusta, eli noin 42 prosenttia muutoksesta vuosien 2012 ja 2017
-välillä.
 
-Aggregaattikertoimet kaikissa mallissa todennäköisyyksillä painotettuna
-ovat
-
-```{r, message = FALSE, warning = FALSE, echo=FALSE}
-syntyvyys_coef=coef(syntyvyys_reg,estimator="BMA")
-syntyvyys_coef
-```
-
-Näistä näkyy hyvin useimmat mallit sisältävät kehyskaupungin,
-sisempikaupungin, some_35_44_lag1:n sekä avioituvuus_naiset_30_34_lag1:n
-tekijöinä. Faktorien painot vastaavat hyvin todennäköisimmän mallin
-painoja: sosiaalisen median aktiivikäytön kasvuja sisemmän kaupungin
-väestöosuuden kasvu alentavat syntyvyyttä, avioituvuuden ja
-kehyskaupungin väestöosuuden kasvut lisäävät syntyvyyttä.
-
-Tarkastetaan vielä, millaisia residuaaleja jää selittämättä mallilla
-
-```{r, message = FALSE, warning = FALSE, echo=FALSE}
-plot(syntyvyys_reg,1)+ theme_minimal()
-```
-
-Ja lopuksi verrataan mallin sovitetta
-
-```{r, message = FALSE, warning = FALSE, echo=FALSE}
-fit<-fitted(syntyvyys_reg)
-vuosi<-syntyvyysaineisto_redusoitu$vuosi[1:redusoitulen]
-hedelmallisyysluku<-syntyvyysaineisto_redusoitu$hedelmallisyysluku[1:redusoitulen]
-df<-data.frame(vuosi,hedelmallisyysluku,fit)
-ggplot(df,aes(x=vuosi))+geom_line(aes(y=hedelmallisyysluku,colour="green"))+geom_line(aes(y=fit,colour="red")) + scale_color_discrete(name = "Hedelmällisyysluku", labels = c("Aineisto", "Sovite"))
-```
-
-Residuaaleista näkee, että malli selittää heikoimmin viimeisimpiä
-havaintoja (erityisesti outlier #27). Aiemmin laskettiin, että juuri
-tällä aikavälillä faktorit selittivät vain hieman yli puolet
-varianssista.
-
-# Ennuste
-
-Pyritään sitten arvioimaan miten hedelmällisyysluku kehittyy, mikäli 10
-viime vuoden trendi jatkuisi näiden neljän tekijän osalta. Jatketaan
-trendiä lineaarisesti avioituvuudelle, kaupungistumiselle ja aktiivisten
-somen käyttäjien osuudelle. Muut tekijät pidetään vakiona.
-
-```{r, message = FALSE, warning = FALSE, echo=FALSE}
-ennuste <- predict(syntyvyys_reg, syntyvyysaineisto_ennuste,estimator="HPM")
-#print(ennuste)
-```
-
-```{r, message = FALSE, warning = FALSE, echo=FALSE}
-vuosi<-syntyvyysaineisto_ennuste$vuosi
-hedelmallisyysluku<-ennuste$fit
-hluku<-syntyvyysaineisto_ennuste$hedelmallisyysluku
-hedelmallisyysluku_full<-hedelmallisyysluku
-tfr_tk<-hedelmallisyysluku
-tfr_hav <- rep(NA, 41)
-#tfr_hav[:]<-NaN
-tfr_hav[30]<-1.35
-tfr_hav[31]<-1.37
-tfr_hav[32]<-1.46
-tfr_hav[33]<-1.31
-
-df<-data.frame(vuosi,hedelmallisyysluku,hluku,tfr_tk,tfr_hav)
-
-ggplot(df,aes(x=vuosi))+geom_line(aes(y=hedelmallisyysluku,colour="red"))+geom_line(aes(y=tfr_tk,colour="pink"))+geom_line(aes(y=hluku,colour="green"))+geom_line(aes(y=hluku,colour="green"))+geom_point(aes(y=tfr_hav,colour="black"))+scale_color_manual(name="Hedelmällisyysluku",labels=c("Toteuma","TK 2018","Ennuste"),values=c("red","pink","deepskyblue2",'black'))+ theme_minimal()
-
-print(hedelmallisyysluku)
-```
-
-Meillä on nyt ennuste hedelmällisyysluvusta, joten käytetään sitä ja
-väestöennusteen naisten lukumääriä arvioimaan syntyvien lasten määriä
-
-```{r, message = FALSE, warning = FALSE, echo=FALSE}
-syntyvyys_base = bas.lm(syntyneita ~ hedelmallisyysluku + naisten_lkm_15_19 + naisten_lkm_20_24 +naisten_lkm_25_29 + naisten_lkm_30_34 +naisten_lkm_35_39 + naisten_lkm_40_45 + naisten_lkm_45_49, 
-data = syntyvyysaineisto_redusoitu, prior = "ZS-null", modelprior = uniform())
+red<-dim(syntyvyysaineisto_redusoitu_2022)
+redusoitulen<-red[1]
+#syntyvyysaineisto_ennuste<-syntyvyysaineisto_ennuste[15:42,]
+enn<-dim(syntyvyysaineisto_ennuste_2022)-1
+ennustelen<-enn[1]
 ```
 
 Miten aineiston arviointi onnistui?
 
-```{r, message = FALSE, warning = FALSE, echo=FALSE}
-aineisto<-data.frame(hedelmallisyysluku_full,naisten_lkm_15_19=syntyvyysaineisto_ennuste$naisten_lkm_15_19,naisten_lkm_20_24=syntyvyysaineisto_ennuste$naisten_lkm_20_24,naisten_lkm_25_29=syntyvyysaineisto_ennuste$naisten_lkm_25_29,naisten_lkm_30_34=syntyvyysaineisto_ennuste$naisten_lkm_30_34,naisten_lkm_35_39=syntyvyysaineisto_ennuste$naisten_lkm_35_39,naisten_lkm_40_45=syntyvyysaineisto_ennuste$naisten_lkm_40_45,naisten_lkm_45_49=syntyvyysaineisto_ennuste$naisten_lkm_45_49)
-
-lkmennuste <- predict(syntyvyys_base, aineisto,estimator="BMA")
-
-vuosi<-syntyvyysaineisto_ennuste$vuosi
-syntyneita<-lkmennuste$fit
-syntyneita_ennuste<-syntyneita
-syntyneita_tk<-syntyvyysaineisto_ennuste$syntyneita_tk
-nsynt<-syntyvyysaineisto_ennuste$syntyneita
-
-syntyneita_hav <- rep(NA, 41)
-#tfr_hav[:]<-NaN
-syntyneita_hav[30]<-45613
-syntyneita_hav[31]<-46463
-syntyneita_hav[32]<-49594
-syntyneita_hav[33]<-44933 
-syntyneita[29:33]<-NA
-
-df<-data.frame(vuosi,syntyneita,nsynt,syntyneita_tk,syntyneita_hav)
-print(df)
-ggplot(df,aes(x=vuosi))+geom_line(aes(y=syntyneita,colour="red"))+geom_line(aes(y=syntyneita_ennuste,colour="green"))+geom_line(aes(y=nsynt,colour="green"))+geom_line(aes(y=syntyneita_tk,colour="pink"))+geom_point(aes(y=syntyneita_hav,colour="black"))+scale_color_manual(values=c("red","pink","deepskyblue2",'black'),name=c("Syntyneitä"),labels=c("Toteuma","TK 2018","Ennuste",'Out of sample'))+ theme_minimal()
-```
 
 Mallin ennuste 2018 kerätyn datan (aineisto 2017 ja aiemmin) perusteella
 vuodelle 2022 oli 1,326819, kun toteuma oli 1,31. Ennuste oli melko hyvä
@@ -404,15 +293,6 @@ Päivitetään ennuste vuonna 2023 kerätyllä datalla, joka loppuu vuoteen
 kohdilleen.
 
 ```{r, message = FALSE, warning = FALSE, echo=FALSE}
-ennuste2023 <- predict(syntyvyys_reg, syntyvyysaineisto_2023,estimator="BMA")
-vuosi<-syntyvyysaineisto_2023$vuosi
-hedelmallisyysluku<-ennuste2023$fit
-hluku<-syntyvyysaineisto_ennuste$hedelmallisyysluku
-#hluku<-syntyvyysaineisto$hedelmallisyysluku
-print(hedelmallisyysluku)
-```
-
-```{r, message = FALSE, warning = FALSE, echo=FALSE}
 #tfr_tk<-hedelmallisyysluku
 tfr_tk<-syntyvyysaineisto_2023$tfr_tk
 tfr_hav <- rep(NA, 41)
@@ -421,35 +301,12 @@ tfr_hav[30]<-1.35
 tfr_hav[31]<-1.37
 tfr_hav[32]<-1.46
 tfr_hav[33]<-1.31
+tfr_hav[34]<-1.28
 
 ```
 
 ```{r, message = FALSE, warning = FALSE, echo=FALSE}
-df<-data.frame(vuosi,hedelmallisyysluku,hluku,tfr_tk,tfr_hav)
-print(df)
-```
-
-```{r, message = FALSE, warning = FALSE, echo=FALSE}
-ggplot(df,aes(x=vuosi))+geom_line(aes(y=hedelmallisyysluku,colour="red"))+geom_line(aes(y=tfr_tk,colour="pink"))+geom_line(aes(y=hluku,colour="green"))+geom_point(aes(y=tfr_hav,colour="black"))+scale_color_manual(name="Hedelmällisyysluku",labels=c("Toteuma","TK 2018","Ennuste"),values=c("red","pink","deepskyblue2",'black'))+ theme_minimal()
-```
-
-Meillä on nyt ennuste hedelmällisyysluvusta, joten käytetään sitä ja
-väestöennusteen naisten lukumääriä arvioimaan syntyvien lasten määriä
-
-```{r, message = FALSE, warning = FALSE, echo=FALSE}
-syntyvyys_base = bas.lm(syntyneita ~ hedelmallisyysluku + naisten_lkm_15_19 + naisten_lkm_20_24 +naisten_lkm_25_29 + naisten_lkm_30_34 +naisten_lkm_35_39 + naisten_lkm_40_45 + naisten_lkm_45_49, 
-data = aineisto_rev2023_v3, prior = "ZS-null", modelprior = uniform())
-```
-
-```{r, message = FALSE, warning = FALSE, echo=FALSE}
-aineisto2023<-data.frame(hedelmallisyysluku,naisten_lkm_15_19=syntyvyysaineisto_2023$naisten_lkm_15_19,naisten_lkm_20_24=syntyvyysaineisto_2023$naisten_lkm_20_24,naisten_lkm_25_29=syntyvyysaineisto_2023$naisten_lkm_25_29,naisten_lkm_30_34=syntyvyysaineisto_2023$naisten_lkm_30_34,naisten_lkm_35_39=syntyvyysaineisto_2023$naisten_lkm_35_39,naisten_lkm_40_45=syntyvyysaineisto_2023$naisten_lkm_40_45,naisten_lkm_45_49=syntyvyysaineisto_2023$naisten_lkm_45_49)
-
-lkmennuste2023 <- predict(syntyvyys_base, aineisto_rev2023_v3,estimator="BMA")
-
-vuosi<-syntyvyysaineisto_2023$vuosi
-syntyneita<-lkmennuste$fit
-syntyneita_tk<-syntyvyysaineisto_2023$syntyneita_tk
-nsynt<-syntyvyysaineisto_2023$syntyneita
+aineisto2023<-data.frame(naisten_lkm_15_19=syntyvyysaineisto_2023$naisten_lkm_15_19,naisten_lkm_20_24=syntyvyysaineisto_2023$naisten_lkm_20_24,naisten_lkm_25_29=syntyvyysaineisto_2023$naisten_lkm_25_29,naisten_lkm_30_34=syntyvyysaineisto_2023$naisten_lkm_30_34,naisten_lkm_35_39=syntyvyysaineisto_2023$naisten_lkm_35_39,naisten_lkm_40_45=syntyvyysaineisto_2023$naisten_lkm_40_45,naisten_lkm_45_49=syntyvyysaineisto_2023$naisten_lkm_45_49)
 
 syntyneita_hav <- rep(NA, 41)
 #tfr_hav[:]<-NaN
@@ -458,22 +315,19 @@ syntyneita_hav[31]<-46463
 syntyneita_hav[32]<-49594
 syntyneita_hav[33]<-44933 
 
-df<-data.frame(vuosi,syntyneita,nsynt,syntyneita_tk,syntyneita_hav)
-print(df)
-ggplot(df,aes(x=vuosi))+geom_line(aes(y=syntyneita,colour="red"))+geom_line(aes(y=nsynt,colour="green"))+geom_line(aes(y=syntyneita_tk,colour="pink"))+geom_point(aes(y=syntyneita_hav,colour="black"))+scale_color_manual(values=c("red","pink","deepskyblue2",'black'),name=c("Syntyneitä"),labels=c("Toteuma","TK 2018","Ennuste",'Out of sample'))+ theme_minimal()
-#ggplot(df,aes(x=vuosi))+geom_line(aes(y=syntyneita,colour="red"))+geom_line(aes(y=nsynt,colour="green"))+geom_line(aes(y=syntyneita_tk,colour="pink"))+geom_point(aes(y=syntyneita_hav,colour="black"))+scale_color_manual(values=c("red","pink","deepskyblue2",'black'),name=c("Syntyneitä"),labels=c("Toteuma",
 ```
 
 ```{r, message = FALSE, warning = FALSE, echo=FALSE}
+vuosi<-syntyvyysaineisto_2023$vuosi
 plot_data<-function(df,vuosi,a2018,b2023,selite,xlabel,f1,f2) {
   a2018_data<-rep(NA,41)
   a2018_data[1:29]=a2018[1:29]
   a2018_ennuste<-rep(NA,41)
   a2018_ennuste[29:41]=a2018[29:41]
   b2023_data<-rep(NA,41)
-  b2023_data[1:32]=b2023[1:32]
+  b2023_data[1:33]=b2023[1:33]
   b2023_ennuste<-rep(NA,41)
-  b2023_ennuste[32:41]=b2023[32:41]
+  b2023_ennuste[33:41]=b2023[33:41]
   x1=vuosi[34]
   y1=a2018[34]*f1
   x2=x1
@@ -482,25 +336,32 @@ plot_data<-function(df,vuosi,a2018,b2023,selite,xlabel,f1,f2) {
   xlab(xlabel)
 }
 
-some_NEW=syntyvyysaineisto_2023$some_35_44
+syntyvyysaineisto_ennuste
+
+some_NEW=syntyvyysaineisto_ennuste_2022$some_35_44[1:41]
 some_OLD=syntyvyysaineisto_ennuste$some_35_44
-some_NEW=syntyvyysaineisto_2023$some_35_44
+some_NEW=syntyvyysaineisto_ennuste_2022$some_35_44[1:41]
 some_OLD=syntyvyysaineisto_ennuste$some_35_44
 sisempikaupunki_OLD=syntyvyysaineisto_ennuste$sisempikaupunki
-sisempikaupunki_NEW=syntyvyysaineisto_2023$sisempikaupunki
+sisempikaupunki_NEW=syntyvyysaineisto_ennuste_2022$sisempikaupunki[1:41]
+ulompikaupunki_OLD=syntyvyysaineisto_ennuste$ulompikaupunki
+ulompikaupunki_NEW=syntyvyysaineisto_ennuste_2022$ulompikaupunki[1:41]
 kehyskaupunki_OLD=syntyvyysaineisto_ennuste$kehyskaupunki
-kehyskaupunki_NEW=syntyvyysaineisto_2023$kehyskaupunki
+kehyskaupunki_NEW=syntyvyysaineisto_ennuste_2022$kehyskaupunki[1:41]
 avioituvuus_naiset_30_34_OLD=syntyvyysaineisto_ennuste$avioituvuus_naiset_30_34
-avioituvuus_naiset_30_34_NEW=syntyvyysaineisto_2023$avioituvuus_naiset_30_34
-df<-data.frame(syntyvyysaineisto_ennuste$vuosi,some_OLD,some_NEW,sisempikaupunki_OLD,sisempikaupunki_NEW,kehyskaupunki_OLD,kehyskaupunki_NEW)
+avioituvuus_naiset_30_34_NEW=syntyvyysaineisto_ennuste_2022$avioituvuus_30_34[1:42]
+synnyttajien_keskiika_OLD=syntyvyysaineisto_ennuste$synnyttajien_keskiika
+synnyttajien_keskiika_NEW=syntyvyysaineisto_ennuste_2022$synnyttajien_keskiika[1:41]
+df<-data.frame(syntyvyysaineisto_ennuste$vuosi,some_OLD,some_NEW,sisempikaupunki_OLD,sisempikaupunki_NEW,ulompikaupunki_OLD,ulompikaupunki_NEW,synnyttajien_keskiika_OLD,synnyttajien_keskiika_NEW,kehyskaupunki_OLD,kehyskaupunki_NEW)
 plot_data(df,vuosi,some_OLD,some_NEW,'Sosiaalista mediaa päivittäin käyttävien osuus (%)','Vuosi',0.9,0.9)
 plot_data(df,vuosi,sisempikaupunki_OLD,sisempikaupunki_NEW,'sisäkaupungissa asuvien osuus (%)','Vuosi',0.98,1.02)
 plot_data(df,vuosi,kehyskaupunki_OLD,kehyskaupunki_NEW,'kehyskaupungissa asuvien osuus (%)','Vuosi',1.01,0.99)
 plot_data(df,vuosi,avioituvuus_naiset_30_34_OLD,avioituvuus_naiset_30_34_NEW,'avioituvuus','Vuosi',1.1,0.9)
 plot_data(df,vuosi,some_OLD,some_NEW,'Ratio of daily users of social media (%)','Year',0.9,0.9)
 plot_data(df,vuosi,sisempikaupunki_OLD,sisempikaupunki_NEW,'Ratio of persons living in the inner city (%)','Year',0.98,1.02)
-plot_data(df,vuosi,kehyskaupunki_OLD,kehyskaupunki_NEW,'Ratio of persons living in the outer city (%)','Year',1.01,0.99)
-plot_data(df,vuosi,avioituvuus_naiset_30_34_OLD,avioituvuus_naiset_30_34_NEW,'Marriage rate for 30-30 year old women','Year',1.1,0.9)
+plot_data(df,vuosi,ulompikaupunki_OLD,ulompikaupunki_NEW,'Ratio of persons living in the outer city (%)','Year',1.01,0.99)
+plot_data(df,vuosi,avioituvuus_naiset_30_34_OLD,avioituvuus_naiset_30_34_NEW,'Marriage rate for 30-34 year old women','Year',1.1,0.9)
+plot_data(df,vuosi,synnyttajien_keskiika_OLD,synnyttajien_keskiika_NEW,'Average age','Year',0.989,1.011)
 ```
 
 ## Syntyvyyden laskun syyt

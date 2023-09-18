@@ -170,7 +170,8 @@ syntyvyysaineisto_ennuste <- syntyvyysaineisto_ennuste %>% mutate(tyollisyysaste
        syntyneita_tk=phones_2023$tk_syntyneet[1:42],
        dummy2021=dummy2021[1:42]
       )
-syntyvyysaineisto_redusoitu<-syntyvyysaineisto_redusoitu[2:34,]
+cutoff=33
+syntyvyysaineisto_redusoitu<-syntyvyysaineisto_redusoitu[2:cutoff,]
 print(syntyvyysaineisto_ennuste)
 
 t0<-rep(1.45,42)
@@ -310,7 +311,7 @@ ennuste <- predict(syntyvyys_reg, syntyvyysaineisto_ennuste,estimator="HPM",se.f
 ```
 
 ```{r, message = FALSE, warning = FALSE, echo=FALSE}
-round(summary(syntyvyys_reg,n.models=3),3)
+round(summary(syntyvyys_reg,n.models=10),3)
 ```
 
 Regressiokertoimet todennäköisimmässä mallissa ovat
@@ -318,8 +319,10 @@ Regressiokertoimet todennäköisimmässä mallissa ovat
 ```{r, message = FALSE, warning = FALSE, echo=FALSE}
 syntyvyys_coef=coef(syntyvyys_reg,estimator="HPM")
 syntyvyys_coef
-syntyvyys_coef_bma=coef(syntyvyys_reg,estimator="B")
+syntyvyys_coef_bma=coef(syntyvyys_reg,estimator="BMA")
 syntyvyys_coef_bma
+syntyvyys_coef_mpm=coef(syntyvyys_reg,estimator="MPM")
+syntyvyys_coef_mpm
 ```
 
 ```{r, message = FALSE, warning = FALSE, echo=FALSE}
@@ -339,6 +342,7 @@ tfr_hav[30]<-1.35
 tfr_hav[31]<-1.37
 tfr_hav[32]<-1.46
 tfr_hav[33]<-1.31
+tfr_hav[34]<-1.28
 tfr_hav2<-tfr_hav
 tfr_hav2[30]<-NA
 tfr_lin<-rep(0,41)
@@ -346,81 +350,88 @@ tfr_lin<-tfr_hav
 
 hfs=hedelmallisyysluku_sovite
 hfe=hedelmallisyysluku_ennuste
-df<-data.frame(vuosi,hfs,hedelmallisyysluku_ennuste,hluku,tfr_tk,tfr_hav,dummy2021[1:41])
+#print(hfe)
+syntyneita_hav2023<-c(NA) 
+syntyneita_hav2023[1:41]<-NA
+syntyneita_hav2023[34]<-1.28
+df<-data.frame(vuosi,hfs,hedelmallisyysluku_ennuste,hluku,tfr_tk,tfr_hav,dummy2021[1:41],syntyneita_hav2023)
 
 alkuperainen<-c(1.801410,1.820554,1.836130,1.837525,1.824278,1.791314,1.760520,1.753111,1.717635,1.718331,1.718005,1.735267,1.729789,1.761441,1.774785,1.829529,1.852462,1.855232,1.862476,1.859763,1.828132,1.817415,1.788184,1.755567,1.683950,1.654840,1.594941,1.498558,1.467392,1.431868,1.395840,1.361507,1.326819,1.294167,1.261299,1.230761,1.200121,1.169377,1.146973,1.125036,1.103073)
 alkuperainen[1:29]<-NA
 
+hedelmallisyysluku_sovite_nodummy<-hedelmallisyysluku_sovite
+hedelmallisyysluku_sovite_nodummy[32]<-hedelmallisyysluku_sovite[32]-0.1123845
+print(hedelmallisyysluku_sovite_nodummy[32])
+
 labels=c(hedelmallisyysluku_toteutunut="Havainto -2022",tfr_tk="Tilastokeskus",hedelmallisyysluku_sovite='Sovite',hedelmallisyysluku_ennuste='Ennuste',tfr_lin='lin-approx')
-ggplot(df,aes(x=vuosi))+geom_line(aes(y=tfr_tk),color="black",linetype = "dotted")+geom_line(aes(y=hluku),color='black')+geom_line(aes(y=hedelmallisyysluku_sovite),color="deepskyblue2")+geom_line(aes(y=hedelmallisyysluku_ennuste),color="navyblue",linetype = "dashed")+geom_line(aes(y=tfr_lin),linetype = "dotdash")+scale_color_manual(name="Hedelmällisyysluku",labels=labels)+ theme_minimal() + ylab("Hedelmällisyysluku") + geom_text(x=2000, y=1.8, label="Havainto")+ geom_text(x=2025, y=1.5, label="Väestöennuste")+ geom_text(x=2000, y=1.65, label="Sovite", color='deepskyblue2')+ geom_text(x=2025, y=1.1, label="Ennuste 2023", color='navyblue')
+ggplot(df,aes(x=vuosi))+geom_line(aes(y=tfr_tk),color="black",linetype = "dotted")+geom_line(aes(y=hluku),color='black')+geom_line(aes(y=hedelmallisyysluku_sovite),color="deepskyblue2")+geom_line(aes(y=hedelmallisyysluku_ennuste),color="navyblue",linetype = "dashed")+geom_line(aes(y=tfr_lin),linetype = "dotdash")+scale_color_manual(name="Hedelmällisyysluku",labels=labels)+ theme_minimal() + ylab("Hedelmällisyysluku") + geom_text(x=2000, y=1.8, label="Havainto")+ geom_text(x=2025, y=1.5, label="Väestöennuste")+ geom_text(x=2000, y=1.65, label="Sovite", color='deepskyblue2')+ geom_text(x=2025, y=1.1, label="Ennuste 2023", color='navyblue')+ylim(1.0,1.9)
 
 
-ggplot(df,aes(x=vuosi))+geom_line(aes(y=tfr_tk),color="black",linetype = "dotted")+geom_line(aes(y=hluku),color='black')+geom_line(aes(y=hedelmallisyysluku_sovite),color="deepskyblue2")+geom_line(aes(y=hedelmallisyysluku_ennuste),color="navyblue",linetype = "dashed")+geom_line(aes(y=tfr_lin),linetype = "dotdash")+ theme_minimal() + ylab("Total fertility rate") + xlab("Year") +geom_text(x=2000, y=1.8, label="Observation")+ geom_text(x=2025, y=1.5, label="Statistics Finland")+ geom_text(x=2000, y=1.65, label="Fit", color='deepskyblue2')+ geom_text(x=2025, y=1.1, label="Forecast 2023", color='navyblue')
+ggplot(df,aes(x=vuosi))+geom_line(aes(y=tfr_tk),color="black",linetype = "dotted")+geom_line(aes(y=hluku),color='black')+geom_line(aes(y=hedelmallisyysluku_sovite),color="deepskyblue2")+geom_line(aes(y=hedelmallisyysluku_ennuste),color="navyblue",linetype = "dashed")+geom_line(aes(y=tfr_lin),linetype = "dotdash")+geom_line(aes(y=hedelmallisyysluku_sovite_nodummy),linetype = "dotdash")+ theme_minimal() + ylab("Total fertility rate") + xlab("Year") +geom_text(x=2000, y=1.8, label="Observation")+ geom_text(x=2025, y=1.5, label="Statistics Finland")+ geom_text(x=2000, y=1.65, label="Fit", color='deepskyblue2')+ geom_text(x=2025, y=1.1, label="Forecast 2023", color='navyblue')+ylim(1.0,1.9)
 
-ggplot(df,aes(x=vuosi))+geom_line(aes(y=hluku),color='black')+geom_line(aes(y=hedelmallisyysluku_ennuste),color="navyblue",linetype = "dashed") +geom_line(aes(y=alkuperainen),color="darkgreen",linetype = "dotdash") +scale_color_manual(name="Hedelmällisyysluku",labels=labels)+ theme_minimal() + ylab("Hedelmällisyysluku") + geom_text(x=2000, y=1.8, label="Havainto")+ geom_text(x=2025, y=1.1, label="Ennuste 2023", color='navyblue')+ geom_text(x=2027, y=1.3, label="Ennuste 2018", color='darkgreen')
+ggplot(df,aes(x=vuosi))+geom_line(aes(y=hluku),color='black')+geom_line(aes(y=hedelmallisyysluku_ennuste),color="navyblue",linetype = "dashed") +geom_line(aes(y=alkuperainen),color="darkgreen",linetype = "dotdash") +scale_color_manual(name="Hedelmällisyysluku",labels=labels)+ theme_minimal() + ylab("Hedelmällisyysluku") + geom_text(x=2000, y=1.8, label="Havainto")+ geom_text(x=2025, y=1.1, label="Ennuste 2023", color='navyblue')+ geom_text(x=2027, y=1.3, label="Ennuste 2018", color='darkgreen')+ylim(1.0,1.9)
 
-ggplot(df,aes(x=vuosi))+geom_line(aes(y=hluku),color='black')+geom_line(aes(y=hedelmallisyysluku_ennuste),color="navyblue",linetype = "dashed") +geom_line(aes(y=alkuperainen),color="darkgreen",linetype = "dotdash")+ xlab("Year")+ theme_minimal() + ylab("Total fertility rate") + geom_text(x=2000, y=1.8, label="Observation")+ geom_text(x=2025, y=1.1, label="Forecast 2023", color='navyblue')+ geom_text(x=2027, y=1.3, label="Forecast 2018", color='darkgreen')
+ggplot(df,aes(x=vuosi))+geom_line(aes(y=hluku),color='black')+geom_line(aes(y=hedelmallisyysluku_ennuste),color="navyblue",linetype = "dashed") +geom_line(aes(y=alkuperainen),color="darkgreen",linetype = "dotdash")+ xlab("Year")+ theme_minimal() + ylab("Total fertility rate") + geom_text(x=2000, y=1.8, label="Observation")+ geom_text(x=2025, y=1.1, label="Forecast 2023", color='navyblue')+ geom_text(x=2027, y=1.3, label="Forecast 2018", color='darkgreen')+ylim(1.0,1.9)+ geom_point(aes(y=syntyneita_hav2023,colour="red"))
 
 #print(vuosi[41])
 #print(hedelmallisyysluku_ennuste[41])
+
+print(syntyvyysaineisto_redusoitu$avioituvuus_naiset_30_34_lag1)
+print(syntyvyysaineisto_redusoitu$sisempikaupunki)
+
 ```
 
-Meillä on nyt ennuste hedelmällisyysluvusta, joten käytetään sitä ja
-väestöennusteen naisten lukumääriä arvioimaan syntyvien lasten määriä
-
 ```{r, message = FALSE, warning = FALSE, echo=FALSE}
-syntyvyys_base = bas.lm(syntyneita ~ hedelmallisyysluku + naisten_lkm_20_24 +naisten_lkm_25_29 + naisten_lkm_30_34 +naisten_lkm_35_39 + naisten_lkm_40_45 + naisten_lkm_45_49, 
-data = syntyvyysaineisto_redusoitu, prior = "ZS-null", modelprior = uniform())
+#syntyvyys_base = bas.lm(syntyneita ~ hedelmallisyysluku + naisten_lkm_20_24 +naisten_lkm_25_29 + naisten_lkm_30_34 +naisten_lkm_35_39 + naisten_lkm_40_45 + naisten_lkm_45_49, 
+#data = syntyvyysaineisto_redusoitu, prior = "ZS-null", modelprior = uniform())
 ```
 
 Miten aineiston arviointi onnistui?
 
 ```{r, message = FALSE, warning = FALSE, echo=FALSE}
-
-print(syntyvyysaineisto_ennuste$naisten_lkm_15_19)
 hfl=hedelmallisyysluku_full
 aineisto<-data.frame(hedelmallisyysluku=hfl,naisten_lkm_15_19=syntyvyysaineisto_ennuste$naisten_lkm_15_19,naisten_lkm_20_24=syntyvyysaineisto_ennuste$naisten_lkm_20_24,naisten_lkm_25_29=syntyvyysaineisto_ennuste$naisten_lkm_25_29,naisten_lkm_30_34=syntyvyysaineisto_ennuste$naisten_lkm_30_34,naisten_lkm_35_39=syntyvyysaineisto_ennuste$naisten_lkm_35_39,naisten_lkm_40_45=syntyvyysaineisto_ennuste$naisten_lkm_40_45,naisten_lkm_45_49=syntyvyysaineisto_ennuste$naisten_lkm_45_49)
 ```
 
 ```{r, message = FALSE, warning = FALSE, echo=FALSE}
-lkmennuste <- predict(syntyvyys_base, aineisto,estimator="BMA")
+#lkmennuste <- predict(syntyvyys_base, aineisto,estimator="BMA")
 ```
 
 ```{r, message = FALSE, warning = FALSE, echo=FALSE}
-vuosi<-syntyvyysaineisto_ennuste$vuosi
-syntyneita<-lkmennuste$fit
-syntyneita_ennuste<-syntyneita
-syntyneita_ennuste[1:32]<-NA
-syntyneita_sovite<-syntyneita
-syntyneita_sovite[34:41]<-NA
-syntyneita_tk<-syntyvyysaineisto_ennuste$syntyneita_tk
-nsynt<-syntyvyysaineisto_ennuste$syntyneita
+#vuosi<-syntyvyysaineisto_ennuste$vuosi
+#syntyneita<-lkmennuste$fit
+#syntyneita_ennuste<-syntyneita
+#syntyneita_ennuste[1:32]<-NA
+#syntyneita_sovite<-syntyneita
+#syntyneita_sovite[34:41]<-NA
+#syntyneita_tk<-syntyvyysaineisto_ennuste$syntyneita_tk
+#nsynt<-syntyvyysaineisto_ennuste$syntyneita
 ```
 
 ```{r, message = FALSE, warning = FALSE, echo=FALSE}
-syntyneita_hav <- rep(NA, 41)
-syntyneita_hav[30]<-45613
-syntyneita_hav[31]<-46463
-syntyneita_hav[32]<-49594
-syntyneita_hav[33]<-44933 
+#syntyneita_hav <- rep(NA, 41)
+#syntyneita_hav[30]<-45613
+#syntyneita_hav[31]<-46463
+#syntyneita_hav[32]<-49594
+#syntyneita_hav[33]<-44933 
 
-syntyneita_tk[32:41]=c(49529,49347,49142,48920,48657,48400,48131,47881,47655,47462,47309,47202,47126,47096,47062,47039,47011,46963,46875,46728)
+#syntyneita_tk[32:41]=c(49529,49347,49142,48920,48657,48400,48131,47881,47655,47462,47309,47202,47126,47096,47062,47039,47011,46963,46875,46728)
 #syntyneita[29:33]<-NA
 ```
 
 ```{r, message = FALSE, warning = FALSE, echo=FALSE}
-print(vuosi)
-print(syntyneita)
-print(nsynt)
-print(syntyneita_hav)
-df<-data.frame(vuosi,syntyneita,nsynt,syntyneita_tk,syntyneita_hav)
-print(df)
+#print(vuosi)
+#print(syntyneita)
+#print(nsynt)
+#print(syntyneita_hav)
+#df<-data.frame(vuosi,syntyneita,nsynt,syntyneita_tk,syntyneita_hav)
+#print(df)
 #ggplot(df,aes(x=vuosi))+geom_line(aes(y=syntyneita,colour="red"))+geom_line(aes(y=syntyneita_ennuste,colour="green"))+geom_line(aes(y=nsynt,colour="green"))+geom_line(aes(y=syntyneita_tk,colour="pink"))+geom_point(aes(y=syntyneita_hav,colour="black"))+scale_color_manual(values=c("red","pink","deepskyblue2",'black'),name=c("Syntyneitä"),labels=c("Toteuma","TK 2018","Ennuste",'Out of sample'))+ theme_minimal()
 
-ggplot(df,aes(x=vuosi))+geom_line(aes(y=syntyneita_tk),color="black",linetype = "dotted")+geom_line(aes(y=nsynt),color='black')+geom_line(aes(y=syntyneita_sovite),color="deepskyblue2")+geom_line(aes(y=syntyneita_ennuste),color="navyblue",linetype = "dashed")+theme_minimal() + ylab("Syntyneitä")+ geom_text(x=2002, y=60000, label="Havainto")+ geom_text(x=2025, y=37000, label="Ennuste", color='navyblue')+ geom_text(x=2025, y=51000, label="Väestöennuste")+ geom_text(x=2002, y=53000, label="Sovite", color='deepskyblue2')
+#ggplot(df,aes(x=vuosi))+geom_line(aes(y=syntyneita_tk),color="black",linetype = "dotted")+geom_line(aes(y=nsynt),color='black')+geom_line(aes(y=syntyneita_sovite),color="deepskyblue2")+geom_line(aes(y=syntyneita_ennuste),color="navyblue",linetype = "dashed")+theme_minimal() + ylab("Syntyneitä")+ geom_text(x=2002, y=60000, label="Havainto")+ geom_text(x=2025, y=37000, label="Ennuste", color='navyblue')+ geom_text(x=2025, y=51000, label="Väestöennuste")+ geom_text(x=2002, y=53000, label="Sovite", color='deepskyblue2')
 
 
-ggplot(df,aes(x=vuosi))+geom_line(aes(y=syntyneita_tk),color="black",linetype = "dotted")+geom_line(aes(y=nsynt),color='black')+geom_line(aes(y=syntyneita_sovite),color="deepskyblue2")+geom_line(aes(y=syntyneita_ennuste),color="navyblue",linetype = "dashed")+theme_minimal() + ylab("The number of newborns")+ geom_text(x=2002, y=60000, label="Observation")+ geom_text(x=2025, y=37000, label="Forecast", color='navyblue')+ geom_text(x=2025, y=51000, label="Statistics Finland")+ geom_text(x=2002, y=53000, label="Fit", color='deepskyblue2')+ xlab("Year")
+#ggplot(df,aes(x=vuosi))+geom_line(aes(y=syntyneita_tk),color="black",linetype = "dotted")+geom_line(aes(y=nsynt),color='black')+geom_line(aes(y=syntyneita_sovite),color="deepskyblue2")+geom_line(aes(y=syntyneita_ennuste),color="navyblue",linetype = "dashed")+theme_minimal() + ylab("The number of newborns")+ geom_text(x=2002, y=60000, label="Observation")+ geom_text(x=2025, y=37000, label="Forecast", color='navyblue')+ geom_text(x=2025, y=51000, label="Statistics Finland")+ geom_text(x=2002, y=53000, label="Fit", color='deepskyblue2')+ xlab("Year")#+ylim(30000,70000)
 
 ```
 
@@ -483,25 +494,6 @@ keskinäiset painoarvot muuttuvat helposti.
 
 Verrattuna Tilastokeskuksen väestöennusteeseen 2018 ovat tämän mallin
 ennusteet selvästi synkempiä syntyvyyden osalta.
-
-## Johtopäätökset
-
-Ennustemallilla saatu tulos vastaa havaittua alenevaa
-syntyvyyskehitystä. Jos eri syntyvyyteen vaikuttavien tekijöiden kehitys
-jatkuu nykyisenkaltaisena, voi kokonaishedelmällisyysluvun ja
-syntyvyyden arvioida jatkavan alenevaa trendiään kohti
-kokonaishedelmällisyyslukua 1,1 vuoteen 2030 mennessä.
-
-Sosiaalisen median käyttö alkaa olla saavuttanut saturaation, ainakin
-mitattuna päivittäin sosiaalista mediaa käyttävien osuudella. Tämän
-tekijän kasvu tuskin enää jatkossa laskee syntyvyyttä yhtä voimakkaasti
-kuin viime vuosina.
-
-Sitä vastoin sisäkaupungissa asuvien osuus jatkaa kasvuaan. Samaan
-aikaan heidän hedelmällisyyslukunsa on laskenut.
-
-Tämän laskelman ennuste on se, että toisin kuin aiemmin,
-kokonaishedelmällisyys stabiloituu noin 1,1 tasolle.
 
 # Viittaukset
 

@@ -1,0 +1,673 @@
+---
+title: "Sosiaalisen median aktiivikäyttö ja syntyvyys"
+author: "Antti J. Tanskanen, Elinkeinoelämän keskusliitto EK"
+date: "1.3.2023"
+output:
+  html_document:
+    fig_height: 4 
+    highlight: pygments
+    theme: spacelab
+  pdf_document: default
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r load-packages, message = FALSE, echo=FALSE, warning=FALSE}
+library(ggplot2)
+library(dplyr)
+library(statsr)
+library(BAS)
+library(kableExtra)
+source("dualplot.R")
+```
+
+```{r load-data, message = FALSE, echo=FALSE}
+load("data/predictions_backtesting_2023.RData")
+```
+
+------------------------------------------------------------------------
+
+## Aineisto
+
+Tutkimuksessa käytetty aikasarja-aineisto on peräisin tilastokeskuksen
+StatFin-tietokannasta ja Human Mortality Databasesta. Aineisto koostuu
+vuosien 1989-2017 datasta. Väestörakenteesta (Tilastokeskus) mukana on
+syntyneidet lukumäärät, kokonaishedelmällisyysluvut, synnyttäjien
+keski-ikä ja naisten lukumäärät 5-vuotisikäryhmittäin. Mukana ovat myös
+avioliittojen määrät 10-vuotisikäluokittain suhteutettuna ikäluokkien
+suuruuteen (Tilastokeskus).
+
+Työllisyyttä (Tilastokeskus) kuvataan 10-vuotisikäluokittaisilla
+työllisyysasteilla sukupuolittain, 10-vuotisikäluokkakohtaisista
+työttömyysasteista sukupuolittain (suhteutettu ikäluokan kokoon, ), ja
+työsuhteiden tyyppitiedoilla (jatkuva/määräaikainen;
+kokoaikainen/osa-aikainen) vuosilta 1997-2017. Kaupungistumista kuvaa
+sisemmässä kaupungissa, ulommassa kaupungissa ja kehyskaupungissa
+asuvien osuudet väestöstä (Tilastokeskus)
+
+Verrattuna aiempiin harjoitelmiin, mukaan on otettu myös sosiaalisen
+median aktiivikäyttäjien osuus Tilastokeskuksen Viestintä- ja
+tietotekniikan käyttö-tutkimuksesta ("Seuraa jotain yhteisöpalvelua
+yleensä jatkuvasti kirjautuneena tai useasti päivässä").
+
+Kaikkiaan lähtöaineistossa on 53 aikasarjaa, joissa on 29 havaintoa
+vuosilta 1989-2017, tosin osasta aikasarjoja vuosien 1989 ja/tai 2017
+luvut puuttuvat. Kaikkia aineistossa olevia muuttujia ei ole
+tutkimuksessa käytetty, vaan keskitytty kokeiluissa lupaavimpiin 9:ään
+muuttujiin.
+
+Aineiston perusteella ei voi tehdä kausaalisia päätelmiä, ainostaan
+assosiatiivisuutta koskevia. Tämä tietenkin rajoittaa
+tulkintamahdollisuuksia.
+
+Tarkoituksena on avoimen, toistettavan tutkimuksen hengessä näyttää
+täsmällisesti mitä on tehty. Tästä syystä alkuperäinen aineisto (myös
+tämä työkirja koodeineen, Rmd-muotoisena; data Rdata-muodossa) on
+kokonaisuudessaan saatavissa osoitteesta
+<https://github.com/ajtanskanen/Syntyvyyden-tekij-t>
+
+```{r, message = FALSE, warning = FALSE, echo = FALSE}
+dummy2021<-rep(0,46)
+dummy2021[33]<-1
+
+lag_df<-function(df,n) df <- df %>% mutate(
+       avioituvuus_naiset_25_29_lag1=lag(avioituvuus_25_29),
+       avioituvuus_naiset_30_34_lag1=lag(avioituvuus_30_34),
+       #alypuhelin=phones2$alypuhelin[1:n],
+       #some_25_34=phones2$some_25_34[1:n],
+       #some_35_44=phones2$some_35_44[1:n],
+       alypuhelin_lag1=lag(alypuhelin,1),
+       some_25_34_lag1=lag(some_25_34,1),
+       some_35_44_lag1=lag(some_35_44,1),
+       dummy2021=dummy2021
+      )
+
+syntyvyysaineisto_redusoitu_2022<-lag_df(predictions_backtesting_2022,35)
+syntyvyysaineisto_redusoitu_2021<-lag_df(predictions_backtesting_2021,34)
+syntyvyysaineisto_redusoitu_2020<-lag_df(predictions_backtesting_2020,33)
+syntyvyysaineisto_redusoitu_2019<-lag_df(predictions_backtesting_2019,32)
+syntyvyysaineisto_redusoitu_2018<-lag_df(predictions_backtesting_2018,31)
+syntyvyysaineisto_redusoitu_2017<-lag_df(predictions_backtesting_2017,30)
+syntyvyysaineisto_ennuste_2022<-lag_df(predictions_backtesting_2022,42)
+syntyvyysaineisto_ennuste_2021<-lag_df(predictions_backtesting_2021,42)
+syntyvyysaineisto_ennuste_2020<-lag_df(predictions_backtesting_2020,42)
+syntyvyysaineisto_ennuste_2019<-lag_df(predictions_backtesting_2019,42)
+syntyvyysaineisto_ennuste_2018<-lag_df(predictions_backtesting_2018,42)
+syntyvyysaineisto_ennuste_2017<-lag_df(predictions_backtesting_2017,42)
+
+hed<-rep(1.45,46)
+hed[1:46]<-NaN
+hed[1:42]<-syntyvyysaineisto_CHECK2023$hedelmallisyysluku
+
+t0<-rep(1.45,46)
+t0[1:29]<-NaN
+t0[30]<-1.43
+syntyvyysaineisto_ennuste_2022$tfr_tk<-t0
+syntyvyysaineisto_ennuste_2021$tfr_tk<-t0
+syntyvyysaineisto_ennuste_2020$tfr_tk<-t0
+syntyvyysaineisto_ennuste_2019$tfr_tk<-t0
+syntyvyysaineisto_ennuste_2018$tfr_tk<-t0
+syntyvyysaineisto_ennuste_2017$tfr_tk<-t0
+
+syntyvyysaineisto_ennuste_2022$hedelmallisyysluku<-hed
+syntyvyysaineisto_ennuste_2021$hedelmallisyysluku<-hed
+syntyvyysaineisto_ennuste_2020$hedelmallisyysluku<-hed
+syntyvyysaineisto_ennuste_2019$hedelmallisyysluku<-hed
+syntyvyysaineisto_ennuste_2018$hedelmallisyysluku<-hed
+syntyvyysaineisto_ennuste_2017$hedelmallisyysluku<-hed
+
+syntyvyysaineisto_ennuste_2022$hedelmallisyysluku_lag1<-lag(hed)
+syntyvyysaineisto_redusoitu_2022$hedelmallisyysluku_lag1<-lag(hed)
+
+
+syntyvyysaineisto_redusoitu_2022<-syntyvyysaineisto_redusoitu_2022[2:34,]
+syntyvyysaineisto_redusoitu_2021<-syntyvyysaineisto_redusoitu_2021[2:33,]
+syntyvyysaineisto_redusoitu_2020<-syntyvyysaineisto_redusoitu_2020[2:32,]
+syntyvyysaineisto_redusoitu_2019<-syntyvyysaineisto_redusoitu_2019[2:31,]
+syntyvyysaineisto_redusoitu_2018<-syntyvyysaineisto_redusoitu_2018[2:30,]
+syntyvyysaineisto_redusoitu_2017<-syntyvyysaineisto_redusoitu_2017[2:29,]
+
+syntyvyysaineisto_redusoitu_2022$hedelmallisyysluku<-hed[2:34]
+syntyvyysaineisto_redusoitu_2021$hedelmallisyysluku<-hed[2:33]
+syntyvyysaineisto_redusoitu_2020$hedelmallisyysluku<-hed[2:32]
+syntyvyysaineisto_redusoitu_2019$hedelmallisyysluku<-hed[2:31]
+syntyvyysaineisto_redusoitu_2018$hedelmallisyysluku<-hed[2:30]
+syntyvyysaineisto_redusoitu_2017$hedelmallisyysluku<-hed[2:29]
+
+t0[31:42]<-1.45
+syntyvyysaineisto_ennuste_2022<-syntyvyysaineisto_ennuste_2022[2:42,]
+syntyvyysaineisto_ennuste_2020<-syntyvyysaineisto_ennuste_2020[2:42,]
+syntyvyysaineisto_ennuste_2021<-syntyvyysaineisto_ennuste_2021[2:42,]
+syntyvyysaineisto_ennuste_2019<-syntyvyysaineisto_ennuste_2019[2:42,]
+syntyvyysaineisto_ennuste_2018<-syntyvyysaineisto_ennuste_2018[2:42,]
+syntyvyysaineisto_ennuste_2017<-syntyvyysaineisto_ennuste_2017[2:42,]
+
+
+red<-dim(syntyvyysaineisto_redusoitu_2022)
+redusoitulen<-red[1]
+#syntyvyysaineisto_ennuste<-syntyvyysaineisto_ennuste[15:42,]
+enn<-dim(syntyvyysaineisto_ennuste_2022)-1
+ennustelen<-enn[1]
+```
+
+# Hedelmällisyysluvun muutoksia selittävä malli
+
+Synnytysikäisten naisten lukumäärää pystytään lyhyellä aikavälillä
+ennustamaan melko hyvin, eikä siihen vaikuta juurikaan muut tekijät,
+kuten vaikkapa työllisyys tai taloudellinen tilanne. Jos jokin vaikuttaa
+syntyvyyteen, vaikutuksen pitäisi näkyä hedelmällisyysluvussa.
+
+Yritetään sitten selittää hedelmällisyysluvun muutoksia käyttäen
+faktoreina kokoelmaa erilaisia tekijöitä ikäluokka- ja
+sukupuolikohtaisia avioituvuuksia ja pienituloisuusosuusasteita (60%
+mediaanitulosta); synnyttäjien keski-ikää, alle 1-vuotiaiden
+kuolleisuutta, sekä sisäkaupungissa, ulkokaupungissa ja kehyskaupungissa
+asuvien osuutta väestöstä. Lisäksi mukana on 25-34- ja 35-44 -vuotiaiden
+somen aktiivikäyttäjien osuus väestöstä.
+
+```{r, message = FALSE, warning = FALSE, echo=FALSE}
+predmodel <- 'MCMC'
+syntyvyys_reg_2022 = bas.lm(hedelmallisyysluku ~ synnyttajien_keskiika + avioituvuus_naiset_25_29_lag1 + avioituvuus_naiset_30_34_lag1  + kehyskaupunki + sisempikaupunki + ulompikaupunki + some_25_34_lag1 + some_35_44_lag1+dummy2021, data = syntyvyysaineisto_redusoitu_2022,
+prior = "ZS-null", modelprior = uniform(),method = predmodel)
+
+autopred_2022 = bas.lm(hedelmallisyysluku ~ hedelmallisyysluku_lag1, data = syntyvyysaineisto_redusoitu_2022,
+prior = "ZS-null", modelprior = uniform(),method = predmodel)
+
+syntyvyys_reg_2020 = bas.lm(hedelmallisyysluku ~ synnyttajien_keskiika + avioituvuus_naiset_25_29_lag1 + avioituvuus_naiset_30_34_lag1  + kehyskaupunki + sisempikaupunki + ulompikaupunki + some_25_34_lag1 + some_35_44_lag1, data = syntyvyysaineisto_redusoitu_2020,
+prior = "ZS-null", modelprior = uniform(),method = predmodel)
+syntyvyys_reg_2021 = bas.lm(hedelmallisyysluku ~ synnyttajien_keskiika + avioituvuus_naiset_25_29_lag1 + avioituvuus_naiset_30_34_lag1  + kehyskaupunki + sisempikaupunki + ulompikaupunki + some_25_34_lag1 + some_35_44_lag1+dummy2021, data = syntyvyysaineisto_redusoitu_2021,
+prior = "ZS-null", modelprior = uniform(),method = predmodel)
+syntyvyys_reg_2019 = bas.lm(hedelmallisyysluku ~ synnyttajien_keskiika + avioituvuus_naiset_25_29_lag1 + avioituvuus_naiset_30_34_lag1  + kehyskaupunki + sisempikaupunki + ulompikaupunki + some_25_34_lag1 + some_35_44_lag1, data = syntyvyysaineisto_redusoitu_2019,
+prior = "ZS-null", modelprior = uniform(),method = predmodel)
+syntyvyys_reg_2018 = bas.lm(hedelmallisyysluku ~ synnyttajien_keskiika + avioituvuus_naiset_25_29_lag1 + avioituvuus_naiset_30_34_lag1  + kehyskaupunki + sisempikaupunki + ulompikaupunki + some_25_34_lag1 + some_35_44_lag1, data = syntyvyysaineisto_redusoitu_2018,
+prior = "ZS-null", modelprior = uniform(),method = predmodel)
+syntyvyys_reg_2017 = bas.lm(hedelmallisyysluku ~ synnyttajien_keskiika + avioituvuus_naiset_25_29_lag1 + avioituvuus_naiset_30_34_lag1  + kehyskaupunki + sisempikaupunki + ulompikaupunki + some_25_34_lag1 + some_35_44_lag1, data = syntyvyysaineisto_redusoitu_2017,
+prior = "ZS-null", modelprior = uniform(),method = predmodel)
+```
+
+Tuloksissa parhaana näkyy neljän faktorin ja vakiotermin malli, jossa
+faktoreina ovat 30-34 -vuotiaiden avioituvuus, sisäkaupungissa ja
+kehyskaupungissa asuvien osuus, sekä 35-44 -vuotiaiden sosiaalisen
+median aktiivikäyttäjien osuus. Näillä faktoreilla on mahdollista
+selittää noin 96 % hedelmällisyysluvun varianssista datassa.
+
+```{r, message = FALSE, warning = FALSE, echo=FALSE}
+round(summary(syntyvyys_reg_2022,n.models=3),3)
+round(summary(syntyvyys_reg_2021,n.models=3),3)
+round(summary(syntyvyys_reg_2020,n.models=3),3)
+round(summary(syntyvyys_reg_2019,n.models=3),3)
+round(summary(syntyvyys_reg_2018,n.models=3),3)
+round(summary(syntyvyys_reg_2017,n.models=3),3)
+```
+
+Regressiokertoimet todennäköisimmässä mallissa ovat
+
+```{r, message = FALSE, warning = FALSE, echo=FALSE}
+estimator<-'BMA'
+syntyvyys_coef_2022=coef(syntyvyys_reg_2022,estimator=estimator)
+syntyvyys_coef_2022
+syntyvyys_coef_2021=coef(syntyvyys_reg_2021,estimator=estimator)
+syntyvyys_coef_2021
+syntyvyys_coef_2020=coef(syntyvyys_reg_2020,estimator=estimator)
+syntyvyys_coef_2020
+syntyvyys_coef_2019=coef(syntyvyys_reg_2019,estimator=estimator)
+syntyvyys_coef_2019
+syntyvyys_coef_2018=coef(syntyvyys_reg_2018,estimator=estimator)
+syntyvyys_coef_2018
+syntyvyys_coef_2017=coef(syntyvyys_reg_2017,estimator=estimator)
+syntyvyys_coef_2017
+```
+
+Hedelmällisyysluku on laskenut 0,38 vuosien 2010 ja 2017 välillä.
+Regressiokertoimista näkyy, että avioituvuus lisää syntyvyyttä: yhden
+prosenttiyksikön nousu avioituvuudessa kytkeytyisi hedelmällisyysluvun
+maltilliseen kasvuun 1,43:stä 1,434:ään. Avioituvuus on laskenut 20,8
+prosenttiyksikköä 30-34-vuotiaissa vuodesta 2008 vuoteen 2017, jolloin
+mallin mukaan sillä voi selittää -0,086:n verran hedelmällisyysluvun
+pudotuksesta. Muutos avioituvuudessa selittää siis noin 23 prosenttia
+muutoksesta.
+
+Kaupungistuminen liittyy jälleen regression mukaan hedelmällisyyslukuun:
+sisäkaupungissa asuvien osuuden kasvu alentaa hedelmällisyyslukua
+(kerroin -0,105). Tiedetään, että Suomen suurissa kaupungeissa on
+alimmat hedelmällisyysluvut, joten tulos on uskottava. Kehyskaupungissa
+asuvien osuus taas kasvattaa selvästi syntyvyyttä (kerroin 0,154).
+Näiden aggregaattivaikutus on -0,106 hedelmällisyyslukuun 2010-2017.
+Kaupungistuminen selittää siis 28 prosenttia muutoksesta.
+
+Sosiaalisen median aktiivikäyttö kertoimien mukaan syrjäyttää
+syntyvyyttä. Vuodesta 2012 vuoteen 2017 välillä somen aktiivikäyttäjien
+osuus on kasvanut 13 prosentista 41:een prosenttiin, ja
+hedelmällisyysluku on samana aikana laskenut 0,33. Jos regressiokerroin
+on kohdallaan, selittää somen aktiivikäyttäjien osuuden kasvu -0,14
+tästä laskusta, eli noin 42 prosenttia muutoksesta vuosien 2012 ja 2017
+välillä.
+
+Aggregaattikertoimet kaikissa mallissa todennäköisyyksillä painotettuna
+ovat
+
+```{r, message = FALSE, warning = FALSE, echo=FALSE}
+syntyvyys_coef_2022=coef(syntyvyys_reg_2022,estimator="BMA")
+syntyvyys_coef_2022
+```
+
+Näistä näkyy hyvin useimmat mallit sisältävät kehyskaupungin,
+sisempikaupungin, some_35_44_lag1:n sekä avioituvuus_naiset_30_34_lag1:n
+tekijöinä. Faktorien painot vastaavat hyvin todennäköisimmän mallin
+painoja: sosiaalisen median aktiivikäytön kasvuja sisemmän kaupungin
+väestöosuuden kasvu alentavat syntyvyyttä, avioituvuuden ja
+kehyskaupungin väestöosuuden kasvut lisäävät syntyvyyttä.
+
+Tarkastetaan vielä, millaisia residuaaleja jää selittämättä mallilla
+
+```{r, message = FALSE, warning = FALSE, echo=FALSE}
+plot(syntyvyys_reg_2022,1)+ theme_minimal()
+```
+
+Ja lopuksi verrataan mallin sovitetta
+
+```{r, message = FALSE, warning = FALSE, echo=FALSE}
+fit<-fitted(syntyvyys_reg_2022)
+redusoitulen<-33
+vuosi<-syntyvyysaineisto_redusoitu_2022$vuosi[1:redusoitulen]
+vuosi
+hedelmallisyysluku<-syntyvyysaineisto_redusoitu_2022$hedelmallisyysluku[1:redusoitulen]
+df<-data.frame(vuosi,hedelmallisyysluku,fit)
+ggplot(df,aes(x=vuosi))+ geom_line(aes(y=hedelmallisyysluku,colour="green"))+ geom_line(aes(y=fit,colour="red", shape="\u2605"))  + scale_color_discrete(name = "Hedelmällisyysluku", labels = c("Aineisto", "Sovite"))
+```
+
+Residuaaleista näkee, että malli selittää heikoimmin viimeisimpiä
+havaintoja (erityisesti outlier #27). Aiemmin laskettiin, että juuri
+tällä aikavälillä faktorit selittivät vain hieman yli puolet
+varianssista.
+
+# Ennuste
+
+Pyritään sitten arvioimaan miten hedelmällisyysluku kehittyy, mikäli 10
+viime vuoden trendi jatkuisi näiden neljän tekijän osalta. Jatketaan
+trendiä lineaarisesti avioituvuudelle, kaupungistumiselle ja aktiivisten
+somen käyttäjien osuudelle. Muut tekijät pidetään vakiona.
+
+```{r, message = FALSE, warning = FALSE, echo=FALSE}
+estimator<-"BMA"
+#estimator<-"HPM"
+ennuste_2022 <- predict(syntyvyys_reg_2022, syntyvyysaineisto_ennuste_2022,estimator=estimator,se.fit = TRUE)
+ennuste_2022.conf.pred <- confint(ennuste_2022, parm = "pred")
+plot(ennuste_2022.conf.pred)
+ennuste_2021 <- predict(syntyvyys_reg_2021, syntyvyysaineisto_ennuste_2021,estimator=estimator,se.fit = TRUE)
+ennuste_2020 <- predict(syntyvyys_reg_2020, syntyvyysaineisto_ennuste_2020,estimator=estimator,se.fit = TRUE)
+ennuste_2019 <- predict(syntyvyys_reg_2019, syntyvyysaineisto_ennuste_2019,estimator=estimator,se.fit = TRUE)
+ennuste_2018 <- predict(syntyvyys_reg_2018, syntyvyysaineisto_ennuste_2018,estimator=estimator,se.fit = TRUE)
+ennuste_2017 <- predict(syntyvyys_reg_2017, syntyvyysaineisto_ennuste_2017,estimator=estimator,se.fit = TRUE)
+#print(ennuste)
+```
+
+```{r, message = FALSE, warning = FALSE, echo=FALSE}
+#ennuste_2022_auto <- predict(autopred_2022, syntyvyysaineisto_ennuste_2022,estimator=estimator,se.fit = TRUE)
+print(syntyvyysaineisto_ennuste_2022)
+ennuste_2022_auto <- ennuste_2022
+```
+
+```{r, message = FALSE, warning = FALSE, echo=FALSE}
+vuosi<-syntyvyysaineisto_ennuste_2022$vuosi
+hedelmallisyysluku_2022<-ennuste_2022$fit
+hedelmallisyysluku_ennuste_2022<-hedelmallisyysluku_2022
+hedelmallisyysluku_sovite_2022<-hedelmallisyysluku_2022
+hluku<-syntyvyysaineisto_ennuste_2022$hedelmallisyysluku
+hedelmallisyysluku_sovite_2022[34:41]<-NA
+hedelmallisyysluku_ennuste_2022[1:32]<-NA
+
+hedelmallisyysluku_ennuste_2022_auto<-ennuste_2022_auto$fit
+hedelmallisyysluku_sovite_2022_auto<-ennuste_2022_auto$fit
+hedelmallisyysluku_sovite_2022_auto[34:41]<-NA
+hedelmallisyysluku_ennuste_2022_auto[1:32]<-NA
+
+
+hedelmallisyysluku_2021<-ennuste_2021$fit
+hedelmallisyysluku_ennuste_2021<-hedelmallisyysluku_2021
+hedelmallisyysluku_sovite_2021<-hedelmallisyysluku_2021
+hluku<-syntyvyysaineisto_ennuste_2021$hedelmallisyysluku
+hedelmallisyysluku_sovite_2021[33:41]<-NA
+hedelmallisyysluku_ennuste_2021[1:31]<-NA
+
+hedelmallisyysluku_2020<-ennuste_2020$fit
+hedelmallisyysluku_ennuste_2020<-hedelmallisyysluku_2020
+hedelmallisyysluku_sovite_2020<-hedelmallisyysluku_2020
+hluku<-syntyvyysaineisto_ennuste_2020$hedelmallisyysluku
+hedelmallisyysluku_sovite_2020[32:41]<-NA
+hedelmallisyysluku_ennuste_2020[1:30]<-NA
+
+hedelmallisyysluku_2019<-ennuste_2019$fit
+hedelmallisyysluku_ennuste_2019<-hedelmallisyysluku_2019
+hedelmallisyysluku_sovite_2019<-hedelmallisyysluku_2019
+hluku<-syntyvyysaineisto_ennuste_2019$hedelmallisyysluku
+hedelmallisyysluku_sovite_2019[31:41]<-NA
+hedelmallisyysluku_ennuste_2019[1:29]<-NA
+
+hedelmallisyysluku_2018<-ennuste_2018$fit
+hedelmallisyysluku_ennuste_2018<-hedelmallisyysluku_2018
+hedelmallisyysluku_sovite_2018<-hedelmallisyysluku_2018
+hluku<-syntyvyysaineisto_ennuste_2019$hedelmallisyysluku
+hedelmallisyysluku_sovite_2018[30:41]<-NA
+hedelmallisyysluku_ennuste_2018[1:28]<-NA
+
+hedelmallisyysluku_2017<-ennuste_2017$fit
+hedelmallisyysluku_ennuste_2017<-hedelmallisyysluku_2017
+hedelmallisyysluku_sovite_2017<-hedelmallisyysluku_2017
+hluku<-syntyvyysaineisto_ennuste_2017$hedelmallisyysluku
+hedelmallisyysluku_sovite_2017[29:41]<-NA
+hedelmallisyysluku_ennuste_2017[1:27]<-NA
+
+ennuste2018<-c(1.801410,1.820554,1.836130,1.837525,1.824278,1.791314,1.760520,1.753111,1.717635,1.718331,1.718005,1.735267,1.729789,1.761441,1.774785,1.829529,1.852462,1.855232,1.862476,1.859763,1.828132,1.817415,1.788184,1.755567,1.683950,1.654840,1.594941,1.498558,1.467392,1.431868,1.395840,1.361507,1.326819,1.294167,1.261299,1.230761,1.200121,1.169377,1.146973,1.125036,1.103073)
+
+tfr_tk<-syntyvyysaineisto_ennuste_2022$tfr_tk
+tfr_tk[29]<-1.45
+hluku[29]<-NA
+tfr_hav <- rep(NA, 41)
+tfr_hav[28]<-1.49
+tfr_hav[29]<-1.41
+tfr_hav[30]<-1.35
+tfr_hav[31]<-1.37
+tfr_hav[32]<-1.46
+tfr_hav[33]<-1.31
+tfr_hav[34]<-1.28
+tfr_hav2<-tfr_hav
+tfr_hav2[28]<-NA
+
+tfr_lin<-tfr_hav
+tfr_lin[29]<-1.41
+tfr_lin[30]<-1.33
+tfr_lin[31]<-1.25
+tfr_lin[32]<-1.17
+tfr_lin[33]<-1.09
+tfr_lin[34]<-1.01
+#tfr_lin[35]<-0.93
+#tfr_lin[36]<-0.85
+#tfr_lin[37]<-0.77
+#tfr_lin[38]<-0.69
+#tfr_lin[39]<-0.61
+#tfr_lin[40]<-0.53
+#tfr_lin[41]<-0.45
+
+RMS <- function(tfr1,tfr2) sqrt(sum((tfr1[29:34]-tfr2[29:34])^2)/length(tfr1[29:34]));
+ABS <- function(tfr1,tfr2) sum(abs((tfr1[29:34]-tfr2[29:34]))/length(tfr1[29:34]));
+MEAN <- function(tfr1,tfr2) mean(tfr1[29:34]-tfr2[29:34]);
+
+RMS(tfr_hav,tfr_lin)
+RMS(tfr_hav,hedelmallisyysluku_2022)
+RMS(tfr_hav,hedelmallisyysluku_2021)
+RMS(tfr_hav,hedelmallisyysluku_2020)
+RMS(tfr_hav,hedelmallisyysluku_2019)
+RMS(tfr_hav,hedelmallisyysluku_2018)
+RMS(tfr_hav,hedelmallisyysluku_2017)
+RMS(tfr_hav,tfr_tk)
+RMS(tfr_hav,ennuste2018)
+ABS(tfr_hav,tfr_tk)
+ABS(tfr_hav,ennuste2018)
+ABS(tfr_hav,tfr_lin)
+MEAN(tfr_hav,tfr_tk)
+MEAN(tfr_hav,ennuste2018)
+MEAN(tfr_hav,tfr_lin)
+
+hedelmallisyysluku_ennuste_2022
+```
+
+ONESTEP
+
+```{r, message = FALSE, warning = FALSE, echo=FALSE}
+ONESTEP <- function(tfr1,tfr2,n) mean(tfr1[n]-tfr2[n]);
+TWOSTEP <- function(tfr1,tfr2,n) mean(tfr1[n:n+1]-tfr2[n:n+1]);
+THREESTEP <- function(tfr1,tfr2,n) mean(tfr1[n:n+2]-tfr2[n:n+2]);
+
+k=29
+ONESTEP(tfr_hav,hedelmallisyysluku_2017,k)
+tfr_hav
+tfr_hav[k]
+hedelmallisyysluku_2017[k]
+TWOSTEP(tfr_hav,hedelmallisyysluku_2017,k)
+THREESTEP(tfr_hav,hedelmallisyysluku_2017,k)
+```
+2018
+
+```{r, message = FALSE, warning = FALSE, echo=FALSE}
+k=30
+ONESTEP(tfr_hav,hedelmallisyysluku_2018,k)
+TWOSTEP(tfr_hav,hedelmallisyysluku_2018,k)
+THREESTEP(tfr_hav,hedelmallisyysluku_2018,k)
+```
+2019
+```{r, message = FALSE, warning = FALSE, echo=FALSE}
+k=31
+ONESTEP(tfr_hav,hedelmallisyysluku_2019,k)
+tfr_hav[k]
+hedelmallisyysluku_2019[k]
+TWOSTEP(tfr_hav,hedelmallisyysluku_2019,k)
+THREESTEP(tfr_hav,hedelmallisyysluku_2019,k)
+```
+2020
+```{r, message = FALSE, warning = FALSE, echo=FALSE}
+k=32
+ONESTEP(tfr_hav,hedelmallisyysluku_2020,k)
+tfr_hav[k]
+hedelmallisyysluku_2020[k]
+TWOSTEP(tfr_hav,hedelmallisyysluku_2020,k)
+THREESTEP(tfr_hav,hedelmallisyysluku_2020,k)
+```
+2021
+```{r, message = FALSE, warning = FALSE, echo=FALSE}
+k=33
+ONESTEP(tfr_hav,hedelmallisyysluku_2021,33)
+tfr_hav[k]
+hedelmallisyysluku_2021[k]
+TWOSTEP(tfr_hav,hedelmallisyysluku_2021,k)
+```
+2022
+```{r, message = FALSE, warning = FALSE, echo=FALSE}
+k=34
+ONESTEP(tfr_hav,hedelmallisyysluku_2022,34)
+tfr_hav[k]
+hedelmallisyysluku_2022[k]
+```
+
+datat
+
+```{r, message = FALSE, warning = FALSE, echo=FALSE}
+vuosi
+hedelmallisyysluku_sovite_2022
+tfr_tk
+hluku
+tfr_hav
+hedelmallisyysluku_ennuste_2022
+hedelmallisyysluku_ennuste_2021
+hedelmallisyysluku_ennuste_2020
+hedelmallisyysluku_ennuste_2019
+hedelmallisyysluku_ennuste_2018
+hedelmallisyysluku_ennuste_2017
+tfr_lin
+df<-data.frame(vuosi,hedelmallisyysluku_sovite_2022,tfr_tk,hluku,tfr_hav,hedelmallisyysluku_ennuste_2022,hedelmallisyysluku_ennuste_2021,hedelmallisyysluku_ennuste_2020,hedelmallisyysluku_ennuste_2019,tfr_lin)
+
+alkuperainen<-c(1.801410,1.820554,1.836130,1.837525,1.824278,1.791314,1.760520,1.753111,1.717635,1.718331,1.718005,1.735267,1.729789,1.761441,1.774785,1.829529,1.852462,1.855232,1.862476,1.859763,1.828132,1.817415,1.788184,1.755567,1.683950,1.654840,1.594941,1.498558,1.467392,1.431868,1.395840,1.361507,1.326819,1.294167,1.261299,1.230761,1.200121,1.169377,1.146973,1.125036,1.103073)
+alkuperainen[1:29]<-NA
+
+c=-0.05
+
+labels=c(hedelmallisyysluku_toteutunut="Havainto -2017",tfr_tk="Tilastokeskus",tfr_tk="Toteuma 2018-2023",hluku='Sovite',hedelmallisyysluku_sovite='Ennuste',tfr_lin='lin-approx')
+ggplot(df,aes(x=vuosi))+ geom_line(aes(y=hluku),color='black')+ #geom_line(aes(y=hedelmallisyysluku_sovite_2022),color="deepskyblue2")+
+#geom_line(aes(y=hedelmallisyysluku_sovite_2021),color="deepskyblue2")+
+#  geom_line(aes(y=hedelmallisyysluku_sovite_2020),color="deepskyblue2")+
+#  geom_line(aes(y=hedelmallisyysluku_sovite_2019),color="deepskyblue2")+
+geom_line(aes(y=tfr_hav),color="red")+ geom_point(aes(y=tfr_hav2),color="red")+ geom_line(aes(y=hedelmallisyysluku_ennuste_2022),color="darkgreen",linetype = "dashed")+ geom_text(x=2029, y=hedelmallisyysluku_ennuste_2022[41]-c, label="2022", color='black')+ geom_line(aes(y=hedelmallisyysluku_ennuste_2022_auto),color="darkgreen",linetype = "dashed")+ geom_text(x=2029, y=hedelmallisyysluku_ennuste_2022_auto[41]-c, label="2022 auto", color='black')+ geom_line(aes(y=hedelmallisyysluku_ennuste_2021),color="darkgreen",linetype = "dashed")+ geom_text(x=2029, y=hedelmallisyysluku_ennuste_2021[41]-c, label="2021", color='black')+ geom_line(aes(y=hedelmallisyysluku_ennuste_2020),color="darkgreen",linetype = "dashed")+ geom_text(x=2029, y=hedelmallisyysluku_ennuste_2020[41]-c, label="2020", color='black')+ geom_line(aes(y=hedelmallisyysluku_ennuste_2019),color="darkgreen",linetype = "dashed")+ geom_text(x=2029, y=hedelmallisyysluku_ennuste_2019[41]-c, label="2019", color='black')+
+geom_line(aes(y=hedelmallisyysluku_ennuste_2018),color="darkgreen",linetype = "dashed")+ geom_text(x=2029, y=hedelmallisyysluku_ennuste_2018[41]-c, label="2018", color='black')+
+geom_line(aes(y=hedelmallisyysluku_ennuste_2017),color="darkgreen",linetype = "dashed")+ geom_text(x=2029, y=hedelmallisyysluku_ennuste_2017[41]-c, label="2017", color='black')+ scale_color_manual(name="Total fertility rate",labels=labels)+ theme_minimal() + ylab("Total fertility rate")+  xlab("Year")+ xlim(2015,2030) + ylim(0.5,1.6)+geom_line(aes(y=alkuperainen),color="pink",linetype = "dotdash")
+
+labels=c(hedelmallisyysluku_toteutunut="Havainto -2017",tfr_tk="Tilastokeskus",tfr_tk="Toteuma 2018-2023",hluku='Sovite',hedelmallisyysluku_sovite='Ennuste',tfr_lin='lin-approx')
+ggplot(df,aes(x=vuosi))+ geom_line(aes(y=hluku),color='black')+ geom_line(aes(y=hedelmallisyysluku_sovite_2022),color="deepskyblue2")+
+geom_line(aes(y=hedelmallisyysluku_sovite_2021),color="deepskyblue2")+
+  geom_line(aes(y=hedelmallisyysluku_sovite_2020),color="deepskyblue2")+
+  geom_line(aes(y=hedelmallisyysluku_sovite_2019),color="deepskyblue2")+
+    geom_line(aes(y=hedelmallisyysluku_sovite_2018),color="deepskyblue2")+
+geom_line(aes(y=tfr_hav),color="red")+ geom_point(aes(y=tfr_hav2),color="red")+ geom_line(aes(y=hedelmallisyysluku_ennuste_2022),color="darkgreen",linetype = "dashed")+ geom_text(x=2029, y=hedelmallisyysluku_ennuste_2022[41]-c, label="2022", color='black')+ geom_line(aes(y=hedelmallisyysluku_ennuste_2021),color="darkgreen",linetype = "dashed")+ geom_text(x=2029, y=hedelmallisyysluku_ennuste_2021[41]-c, label="2021", color='black')+ geom_line(aes(y=hedelmallisyysluku_ennuste_2020),color="darkgreen",linetype = "dashed")+ geom_text(x=2029, y=hedelmallisyysluku_ennuste_2020[41]-c, label="2020", color='black')+ geom_line(aes(y=hedelmallisyysluku_ennuste_2019),color="darkgreen",linetype = "dashed")+ geom_text(x=2029, y=hedelmallisyysluku_ennuste_2019[41]-c, label="2019", color='black')+
+geom_line(aes(y=hedelmallisyysluku_ennuste_2018),color="darkgreen",linetype = "dashed")+ geom_text(x=2029, y=hedelmallisyysluku_ennuste_2018[41]-c, label="2018", color='black')+
+geom_line(aes(y=hedelmallisyysluku_ennuste_2017),color="darkgreen",linetype = "dashed")+ geom_text(x=2029, y=hedelmallisyysluku_ennuste_2017[41]-c, label="2017", color='black')+ scale_color_manual(name="Total fertility rate",labels=labels)+ theme_minimal() + ylab("Total fertility rate")+ geom_text(x=2000, y=1.8, label="Observation")+  geom_text(x=2000, y=1.65, label="Fit", color='deepskyblue2')+ xlab("Year")+geom_text(x=2013, y=1.35, label="Observation 2018-2023", color='red') +geom_line(aes(y=alkuperainen),color="pink",linetype = "dotdash") #+  xlim(2015,2030) + ylim(0.5,1.6)
+```
+
+```{r, message = FALSE, warning = FALSE, echo=FALSE}
+#ggplot(df,aes(x=vuosi))+geom_line(aes(y=tfr_tk),color="black",linetype = "dotted")+geom_line(aes(y=hluku),color='black')+geom_line(aes(y=hedelmallisyysluku_sovite_2022),color="deepskyblue2")+geom_line(aes(y=tfr_hav),color="red")+geom_point(aes(y=tfr_hav2),color="red")+geom_line(aes(y=hedelmallisyysluku_ennuste_2022),color="darkgreen",linetype = "dashed")+geom_line(aes(y=tfr_lin),linetype = "dotdash")+ theme_minimal() + ylab("Total fertility rate")+ geom_text(x=2000, y=1.8, label="Observation")+ geom_text(x=2026, y=1.23, label="Forecast 2018", color='darkgreen')+ geom_text(x=2025, y=1.5, label="Statistics Finland")+ geom_text(x=2000, y=1.65, label="Fit", color='deepskyblue2')+ geom_text(x=2013, y=1.35, label="Observation 2018-2022", color='red')+ geom_text(x=2021, y=1.1, label="Linear projection", color='black')+xlab("Year")
+```
+
+Mallin ennuste 2018 kerätyn datan (aineisto vuodelta 2017 ja aiemmin) perusteella
+vuodelle 2022 oli 1,326819, kun toteuma oli 1,31. Ennuste oli melko hyvä
+jälkeenpäin arvioituna. Lineaarisesti kokonaishedelmällisyysluvun
+trendiä jatkamalla tulos olisi ollut 1,09 (1v trendimuutos) tai 1,19 (5v
+trendimuutos), joka olisi ollut merkittävästi huonompi tulos.
+
+## Vanha ennuste uudella datalla 2023
+
+Päivitetään ennuste vuonna 2023 kerätyllä datalla, joka loppuu vuoteen
+2021. Sovitteen hyvyys kertoo siitä, miten hyvin ennuste datasta meni
+kohdilleen.
+
+```{r, message = FALSE, warning = FALSE, echo=FALSE}
+ennuste2023 <- predict(syntyvyys_reg_2022, syntyvyysaineisto_ennuste_2022,estimator="BMA")
+vuosi<-syntyvyysaineisto_ennuste_2022$vuosi
+hedelmallisyysluku<-ennuste2023$fit
+hluku<-syntyvyysaineisto_ennuste_2022$hedelmallisyysluku
+#hluku<-syntyvyysaineisto$hedelmallisyysluku
+print(hedelmallisyysluku)
+```
+
+```{r, message = FALSE, warning = FALSE, echo=FALSE}
+#tfr_tk<-hedelmallisyysluku
+tfr_tk<-syntyvyysaineisto_ennuste_2022$tfr_tk
+tfr_hav <- rep(NA, 46)
+#tfr_hav[:]<-NaN
+tfr_hav[30]<-1.35
+tfr_hav[31]<-1.37
+tfr_hav[32]<-1.46
+tfr_hav[33]<-1.31
+
+```
+
+```{r, message = FALSE, warning = FALSE, echo=FALSE}
+#df<-data.frame(vuosi,hedelmallisyysluku,hluku,tfr_tk,tfr_hav)
+print(df)
+```
+
+```{r, message = FALSE, warning = FALSE, echo=FALSE}
+#ggplot(df,aes(x=vuosi))+geom_line(aes(y=hedelmallisyysluku,colour="red"))+geom_line(aes(y=tfr_tk,colour="pink"))+geom_line(aes(y=hluku,colour="green"))+geom_point(aes(y=tfr_hav,colour="black"))+scale_color_manual(name="Hedelmällisyysluku",labels=c("Toteuma","TK 2018","Ennuste"),values=c("red","pink","deepskyblue2",'black'))+ theme_minimal()
+```
+
+## Johtopäätökset
+
+Ennustemallilla saatu tulos vastaa havaittua alenevaa
+syntyvyyskehitystä. Jos eri syntyvyyteen vaikuttavien tekijöiden kehitys
+jatkuu nykyisenkaltaisena, voi kokonaishedelmällisyysluvun ja
+syntyvyyden arvioida jatkavan alenevaa trendiään kohti
+kokonaishedelmällisyyslukua 1,1 vuoteen 2030 mennessä.
+
+Sosiaalisen median päivittäinen käyttö alkaa olla saavuttanut
+maksimitason, eikä se voi enää kasva. Tämän tekijän kasvu tuskin enää
+jatkossa laskee syntyvyyttä yhtä voimakkaasti kuin viime vuosina, ellei
+sen vaikutus tule muuta kautta kuin päivittäisten käyttäjien osuutena.
+
+Sitä vastoin sisäkaupungissa asuvien osuus jatkaa kasvuaan. Tämän
+lisäksi heidän hedelmällisyyslukunsa on laskenut [TK].
+
+Tämän laskelman ennuste on se, että toisin kuin aiemmin,
+kokonaishedelmällisyys stabiloituu noin 1,1 tasolle.
+
+# Viittaukset
+
+Becker, G.S., Barro, R.J., Reformulation of the economic theory of
+fertility, The quarterly journal of economics, 1988
+
+Boldrin, M., De Nardi, M., Jones, L.E. Fertility and social security,
+Journal of Demographic Economics 81, 261-299,
+<https://doi.org/10.1017/dem.2014.14>, 2015
+
+Doepke, M., Child mortality and fertility decline: Does the Barro-Becker
+model fit the facts?
+
+Hiilamo, H. T., Fertility Response to Economic Recessions in Finland
+1991--2015 Finnish Yearbook of Population Research 52, 15-28 . DOI:
+10.23979/fypr.65254, 2017
+
+Kohler, H.-P., Kohler, I., Fertility Decline in Russia in the Early and
+Mid 1990s: The Role of Economic Uncertainty and Labour Market Crises,
+European Journal of Population 18, 233-262,
+<https://doi.org/10.1023/A:1019701812709>, 2002.
+
+Martine, G., Alves, J.E., Cavenaghi, S., Urbanization and fertility
+decline: Cashing in on structural change, IIED Working paper, 2013
+
+Miettinen, A., Miksi syntyvyys laskee? Suomalaisten lastensaantiin
+liittyviä toiveita ja odotuksia. Perhebarometri 2015. Väestöliitto,
+2015.
+
+Miettinen, A., Jalovaara, M. Stable employment -- more babies? Life
+stage and educational differences in the effects of labour market
+attachment on first birth among Finnish men and women. Working Papers on
+Social and Economic Issues 15/2016, Turku Center for Welfare Research,
+2016
+
+Rotkirch, A., Tammisalo, K., Miettinen, A., Berg, V. Miksi vanhemmuutta
+lykätään? Perhebarometri, 2017.
+
+Tanskanen, A.J. Sosiaalisen median aktiivikäyttö ja syntyvyys.
+<https://ajtanskanen.github.io/posts/2018/11/Sosiaalisen-median-aktiivik%C3%A4ytt%C3%B6-ja-syntyvyys/>,
+2018
+
+Tikanmäki, H., Huomisen aikuiset syntyvät nyt, Eläketurvakeskuksen blogi
+<https://www.etk.fi/blogit/huomisen-aikuiset-syntyvat-nyt/>, 2017
+
+# Liite: Aika-sarjojen kuvaukset
+
+*syntyneet* Syntyneiden lasten lukumäärä. Lähde: Tilastokeskus
+
+*hedelmallisyysluku* "Kokonaishedelmällisyysluku saadaan laskemalla
+yhteen yhdelle ikävuodelle lasketut hedelmällisyysluvut. Näin saatu luku
+tarkoittaa laskennallista lasten määrää, jonka nainen synnyttää kyseisen
+vuoden hedelmällisyyden pysyessä voimassa naisen koko hedelmällisen
+kauden edellyttäen, ettei hän kuole ennen tämän kauden päättymistä."
+Lähde: Tilastokeskus, Väestörakenne-tilasto
+
+*lapsikuolleisuus* Alle 1-vuotiaana kuolleiden osuus elävänä
+syntyneistä. Lähde: Human mortality database
+
+*tyollisyysaste_miehet_15_24_lag1, tyollisyysaste_naiset_25_34_lag1,
+tyollisyysaste_miehet_35_44_lag1, tyollisyysaste_naiset_15_24_lag1,
+tyollisyysaste_miehet_25_34_lag1, tyollisyysaste_naiset_45_44_lag1*
+Yhden vuoden viivästetty 10-vuotisikäluokittainen työllisyysaste
+miehille ja naisille. Lähde: Tilastokeskus
+
+*synnyttajien_keskiika* Laskettu synnyttäneiden äitien ikien
+keskiarvona. Lähde: Tilastokeskus
+
+*avioituvuus_naiset_25_29, avioituvuus_naiset_30_34* Naisten solmittujen
+avioliittojen lukumäärä suhteessa samanikäisten naisten lukumäärään.
+Lähde: Tilastokeskus
+
+*sisempikaupunki, ulompikaupunki, kehykaupunki* Sisempi kaupunkialue on
+kaupunkien tiivis yhtenäinen tehokkaasti rakennettu alue. Ulompi
+kaupunkialue on sisemmän kaupunkialueen reunasta yhtenäisesti jatkuvan
+taajamarakenteen reunalle ulottuva kaupunkimaisen tehokkuuden alue.
+Kaupungin kehysalue on kaupunkiin välittömästi kytkeytyvä osa kaupungin
+ja maaseudun välivyöhykkeestä. Lähde: TK/Ympäristöministeriö
+
+*naisten_lkm_15_19, naisten_lkm_20_24, naisten_lkm_25_29,
+naisten_lkm_30_34,naisten_lkm_35_39, naisten_lkm_40_45,
+naisten_lkm_45_49* Synnytysikäiset naiset 5-vuotisikäluokittain Lähde:
+Tilastokeskus
+
+*miesten_tyottomyysaste_15_24_lag1, naisten_tyottomyysaste_15_24_lag1,
+miesten_tyottomyysaste_25_34_lag1, naisten_tyottomyysaste_25_34_lag1,
+miesten_tyottomyysaste_35_44_lag1, naisten_tyottomyysaste_35_44_lag1*
+Yhden vuoden viivästetty 10-vuotisikäluokittainen työttömyysaste
+miehille ja naisille Lähde: Tilastokeskus
+
+*some_25_34, some_35_44* "Seuraa jotain yhteisöpalvelua yleensä
+jatkuvasti kirjautuneena tai useasti päivässä". Tilastokeskuksen
+Viestintä- ja tietotekniikan käyttö-tutkimuksesta 10-vuotisikäluokat.
+Aineisto 2012-2021. Tilastoa jatkettu taaksepäin suhteuttamalla 2012
+tieto Internetin käyttäjien lukumäärän muutoksella Lähde: Tilastokeskus
