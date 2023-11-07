@@ -1,0 +1,164 @@
+---
+title: "Sosiaalisen median aktiivikäyttö ja syntyvyys"
+author: "Antti J. Tanskanen, Elinkeinoelämän keskusliitto EK"
+date: "1.3.2023"
+output:
+  html_document:
+    fig_height: 4 
+    highlight: pygments
+    theme: spacelab
+  pdf_document: default
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r load-packages, message = FALSE, echo=FALSE, warning=FALSE}
+library(ggplot2)
+library(dplyr)
+library(statsr)
+library(BAS)
+library(kableExtra)
+source("dualplot.R")
+```
+
+```{r load-data, message = FALSE, echo=FALSE}
+#load("data/aineisto_2024.Rdata")
+load("data/predictions_backtesting_2024.RData")
+```
+
+------------------------------------------------------------------------
+
+## Johdanto
+
+Syntyneiden lasten määrä on Suomessa laskenut 61 000 lapsesta vuonna
+2010 noin 50 300:ään vuonna 2017. Alkuvuoden 2018 luvuilla laskemalla
+vaikuttaa siltä että tämän vuoden syntyneden määrä jää ehkä 48 000:een
+ja hedelmällisyysluku 1,43:een alle vuoden 1973 pohjien. Laskeva trendi
+on jatkunut koko aikavälin 2010-2018, joten satunnaisvaihtelusta tuskin
+on kysymys. Osan syntyneiden lukumäärän laskusta selittää
+synnytysikäisten naisten lukumäärän pieneneminen, mutta ei läheskään
+kaikkea. Muiksi selityksiksi on tarjottu mm. työttömyyttä (Hiilamo,
+2017) ja miesten heikkoa työsuhteeseen kiinnittymistä (Miettinen ja
+Jalovaara, 2015). Muissa maissa syntyvyyden laskun on arvioitu
+aiheutuvan mm. lapsikuolleisuuden vähenemisestä (Becker ja Barro, 1988),
+kaupungistumisesta (Martine et al., 2013) ja vanhuuseläkkeiden
+korkeammasta korvausasteesta (Boldrin et al., 2015). Sen lisäksi että
+työttömyys alentaisi syntyvyyttä, taloudellisten kriisien on myös
+havaittu lisänneen syntyvyyttä (Kohler ja Kohler, 2002).
+
+Syntyneiden määrällä on viiveellä vaikutusta työikäisen väestön määrään,
+ja sitä kautta syntyvyyden laskulla on vaikutuksia mm. sosiaaliturvan
+rahoituksen kestävyyteen. Eläketurvakeskuksen laskelmien mukaan
+syntyvyyden lasku aiheuttaa työeläkemaksussa pitkällä aikavälillä
+useiden prosenttiyksiköiden nousupaineen (Tikanmäki, 2017). Myös
+Väestöntutkimuslaitos on analysoinut syitä syntyvyyden laskulle, mutta
+selkeätä syytä ei ole löytynyt (Rotkirch et al, 2017)
+
+Tässä tutkimuksessa jatketaan aiemman harjoituksen mallilla ja
+kokeillaan miten hyvin ennuste toimii. Tämän lisäksi tutkimuksessa
+pyritään tarkastelemaan, onko sosiaalisen median aktiivikäytön
+lisääntymisellä kytkentää syntyvyyden laskuun.
+
+## Aineisto
+
+Tutkimuksessa käytetty aikasarja-aineisto on peräisin tilastokeskuksen
+StatFin-tietokannasta ja Human Mortality Databasesta. Aineisto koostuu
+vuosien 1989-2017 datasta. Väestörakenteesta (Tilastokeskus) mukana on
+syntyneidet lukumäärät, kokonaishedelmällisyysluvut, synnyttäjien
+keski-ikä ja naisten lukumäärät 5-vuotisikäryhmittäin. Mukana ovat myös
+avioliittojen määrät 10-vuotisikäluokittain suhteutettuna ikäluokkien
+suuruuteen (Tilastokeskus).
+
+Työllisyyttä (Tilastokeskus) kuvataan 10-vuotisikäluokittaisilla
+työllisyysasteilla sukupuolittain, 10-vuotisikäluokkakohtaisista
+työttömyysasteista sukupuolittain (suhteutettu ikäluokan kokoon, ), ja
+työsuhteiden tyyppitiedoilla (jatkuva/määräaikainen;
+kokoaikainen/osa-aikainen) vuosilta 1997-2017. Kaupungistumista kuvaa
+sisemmässä kaupungissa, ulommassa kaupungissa ja kehyskaupungissa
+asuvien osuudet väestöstä (Tilastokeskus)
+
+Verrattuna aiempiin harjoitelmiin, mukaan on otettu myös sosiaalisen
+median aktiivikäyttäjien osuus Tilastokeskuksen Viestintä- ja
+tietotekniikan käyttö-tutkimuksesta ("Seuraa jotain yhteisöpalvelua
+yleensä jatkuvasti kirjautuneena tai useasti päivässä").
+
+Kaikkiaan lähtöaineistossa on 53 aikasarjaa, joissa on 29 havaintoa
+vuosilta 1989-2017, tosin osasta aikasarjoja vuosien 1989 ja/tai 2017
+luvut puuttuvat. Kaikkia aineistossa olevia muuttujia ei ole
+tutkimuksessa käytetty, vaan keskitytty kokeiluissa lupaavimpiin 9:ään
+muuttujiin.
+
+Aineiston perusteella ei voi tehdä kausaalisia päätelmiä, ainostaan
+assosiatiivisuutta koskevia. Tämä tietenkin rajoittaa
+tulkintamahdollisuuksia.
+
+Tarkoituksena on avoimen, toistettavan tutkimuksen hengessä näyttää
+täsmällisesti mitä on tehty. Tästä syystä alkuperäinen aineisto (myös
+tämä työkirja koodeineen, Rmd-muotoisena; data Rdata-muodossa) on
+kokonaisuudessaan saatavissa osoitteesta
+<https://github.com/ajtanskanen/Syntyvyyden-tekij-t>
+
+```{r, message = FALSE, warning = FALSE, echo = FALSE}
+lag_df<-function(df,n) {
+  nlen<-dim(df)[1]
+  dummy2021<-rep(0,nlen)
+  dummy2021[32]<-0
+  dummy2021[33]<-1
+  df2 <- df %>% mutate(
+       työllisyysaste_naiset_25_34_lag1=lag(työllisyysaste_naiset_25_34,1),
+       työllisyysaste_naiset_35_44_lag1=lag(työllisyysaste_naiset_35_44,1),
+       työllisyysaste_miehet_25_34_lag1=lag(työllisyysaste_miehet_25_34,1),
+       työllisyysaste_miehet_35_44_lag1=lag(työllisyysaste_miehet_35_44,1),
+       
+       työttömyys_miehet_25_34_lag1=lag(työttömyys_miehet_25_34,1),
+       työttömyys_naiset_25_34_lag1=lag(työttömyys_naiset_25_34,1),
+       työttömyys_diff_25_34=työttömyys_miehet_25_34-työttömyys_naiset_25_34,
+       työttömyys_diff_25_34_lag1=lag(työttömyys_diff_25_34,1),
+       työttömyys_diff_35_44=työttömyys_miehet_35_44-työttömyys_naiset_35_44,
+       työttömyys_diff_35_44_lag1=lag(työttömyys_diff_35_44,1),
+       
+       kehyskaupunki_lag1=lag(kehyskaupunki,1),
+       ulompikaupunki_lag1=lag(ulompikaupunki,1),
+       sisempikaupunki_lag1=lag(sisempikaupunki,1),
+       maaseudulla_lag1=lag(maaseudulla,1),
+
+       pienituloisuus_miehet_18_29_lag1=lag(pienituloisuus_miehet_18_29,1),
+       pienituloisuus_naiset_18_29_lag1=lag(pienituloisuus_naiset_18_29,1),
+       pienituloisuus_diff_18_29=pienituloisuus_miehet_18_29-pienituloisuus_naiset_18_29,
+       pienituloisuus_diff_18_29_lag1=lag(pienituloisuus_diff_18_29,1),
+       
+       lapsikuolleisuus_lag1=lag(lapsikuolleisuus,1),
+       
+       miehet_perusaste_25_29_lag1=lag(miehet_perusaste_25_29,1),
+       naiset_perusaste_25_29_lag1=lag(naiset_perusaste_25_29,1),
+       perusaste_diff_25_29=miehet_perusaste_25_29-naiset_perusaste_25_29,
+       perusaste_diff_25_29_lag1=lag(perusaste_diff_25_29,1),
+       kolmasaste_naiset_25_29_lag1=lag(kolmasaste_naiset_25_29,1),
+       kolmasaste_miehet_25_29_lag1=lag(kolmasaste_miehet_25_29,1),
+       kolmasaste_diff_25_29=kolmasaste_miehet_25_29-kolmasaste_naiset_25_29,
+       kolmasaste_diff_25_29_lag1=lag(kolmasaste_diff_25_29,1),
+
+       avioituvuus_naiset_25_29_lag1=lag(avioituvuus_naiset_25_29,1),
+       avioituvuus_naiset_30_34_lag1=lag(avioituvuus_naiset_30_34,1),
+       eronneisuus_30_34_lag1=lag(eronneisuus_30_34,1),
+       eronneisuus_25_29_lag1=lag(eronneisuus_25_29,1),
+       avio_eronneisuus_25_29=avioituvuus_naiset_25_29-eronneisuus_25_29,
+       avio_eronneisuus_30_34=avioituvuus_naiset_25_29-eronneisuus_30_34,
+       
+       alypuhelin_lag1=lag(alypuhelin,1),
+
+       some_25_34_lag1=lag(some_25_34,1),
+       some_35_44_lag1=lag(some_35_44,1),
+       some_25_44_diff_lag1=some_25_34_lag1-some_35_44_lag1,
+       dummy2021=dummy2021)
+  df2<-df2[2:n,]
+  return(df2)
+}
+
+syntyvyysaineisto_redusoitu_2022<-lag_df(predictions_backtesting_2022,34)
+syntyvyysaineisto_redusoitu<-syntyvyysaineisto_redusoitu_2022
+print(syntyvyysaineisto_redusoitu)
+kbl(syntyvyysaineisto_redusoitu) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
+```

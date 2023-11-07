@@ -358,7 +358,7 @@ tfr_hav[30]<-1.35
 tfr_hav[31]<-1.37
 tfr_hav[32]<-1.46
 tfr_hav[33]<-1.31
-tfr_hav[34]<-1.28
+tfr_hav[34]<-1.27
 tfr_hav2<-tfr_hav
 tfr_hav2[28]<-NA
 
@@ -380,7 +380,7 @@ tfr_lin[34]<-1.01
 df<-data.frame(vuosi,hedelmallisyysluku_sovite=hedelmallisyysluku_sovite,tfr_tk,hluku,tfr_hav,hedelmallisyysluku_ennuste,tfr_lin)
 print(df)
 labels=c(hedelmallisyysluku_toteutunut="Havainto -2017",tfr_tk="Tilastokeskus",tfr_tk="Toteuma 2018-2022",hluku='Sovite',hedelmallisyysluku_sovite='Ennuste',tfr_lin='lin-approx')
-ggplot(df,aes(x=vuosi))+geom_line(aes(y=tfr_tk),color="black",linetype = "dotted")+geom_line(aes(y=hluku),color='black')+geom_line(aes(y=hedelmallisyysluku_sovite),color="deepskyblue2")+geom_line(aes(y=tfr_hav),color="red")+geom_point(aes(y=tfr_hav2),color="red")+geom_line(aes(y=hedelmallisyysluku_ennuste),color="darkgreen",linetype = "dashed")+geom_line(aes(y=tfr_lin),linetype = "dotdash")+scale_color_manual(name="Hedelmällisyysluku",labels=labels)+ theme_minimal() + ylab("Hedelmällisyysluku")+ geom_text(x=2000, y=1.8, label="Havainto")+ geom_text(x=2027, y=1.2, label="Ennuste", color='darkgreen')+ geom_text(x=2025, y=1.5, label="Väestöennuste")+ geom_text(x=2000, y=1.65, label="Sovite", color='deepskyblue2')+ geom_text(x=2013, y=1.35, label="Havainto 2018-2022", color='red')+ geom_text(x=2020, y=1.1, label="Lineaarinen jatke", color='black')
+ggplot(df,aes(x=vuosi))+geom_line(aes(y=tfr_tk),color="black",linetype = "dotted")+geom_line(aes(y=hluku),color='black')+geom_line(aes(y=hedelmallisyysluku_sovite),color="deepskyblue2")+geom_line(aes(y=tfr_hav),color="red")+geom_point(aes(y=tfr_hav2),color="red")+geom_line(aes(y=hedelmallisyysluku_ennuste),color="darkgreen",linetype = "dashed")+geom_line(aes(y=tfr_lin),linetype = "dotdash")+scale_color_manual(name="Hedelmällisyysluku",labels=labels)+ theme_minimal() + ylab("Hedelmällisyysluku")+ geom_text(x=2000, y=1.8, label="Havainto")+ geom_text(x=2027, y=1.2, label="Ennuste", color='darkgreen')+ geom_text(x=2025, y=1.5, label="Väestöennuste")+ geom_text(x=2000, y=1.65, label="Sovite", color='deepskyblue2')+ geom_text(x=2013, y=1.35, label="Havainto 2018-2023", color='red')+ geom_text(x=2020, y=1.1, label="Lineaarinen jatke", color='black')
 
 ggplot(df,aes(x=vuosi))+geom_line(aes(y=tfr_tk),color="black",linetype = "dotted")+geom_line(aes(y=hluku),color='black')+geom_line(aes(y=hedelmallisyysluku_sovite),color="deepskyblue2")+geom_line(aes(y=tfr_hav),color="red")+geom_point(aes(y=tfr_hav2),color="red")+geom_line(aes(y=hedelmallisyysluku_ennuste),color="darkgreen",linetype = "dashed")+geom_line(aes(y=tfr_lin),linetype = "dotdash")+ theme_minimal() + ylab("Total fertility rate")+ geom_text(x=2000, y=1.8, label="Observation")+ geom_text(x=2026, y=1.23, label="Forecast 2018", color='darkgreen')+ geom_text(x=2025, y=1.5, label="Statistics Finland")+ geom_text(x=2000, y=1.65, label="Fit", color='deepskyblue2')+ geom_text(x=2013, y=1.35, label="Observation 2018-2022", color='red')+ geom_text(x=2021, y=1.1, label="Linear projection", color='black')+xlab("Year")
 ```

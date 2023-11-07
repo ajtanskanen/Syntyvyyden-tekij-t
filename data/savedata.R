@@ -6,4 +6,5 @@ predictions_backtesting_2021 <- read_excel(file,sheet = "2021")
 predictions_backtesting_2022 <- read_excel(file,sheet = "2022")
 predictions_backtesting_2018 <- read_excel(file,sheet = "2018")
 predictions_backtesting_2017 <- read_excel(file,sheet = "2017")
-save.image("~/Github/Syntyvyyden-tekij-t/data/predictions_backtesting_2023.RData")
+save.image("~/Github/Syntyvyyden-tekij-t/data/predictions_backtesting_2024.RData")
+
